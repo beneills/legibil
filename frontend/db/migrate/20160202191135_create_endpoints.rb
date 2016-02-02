@@ -3,7 +3,7 @@ class CreateEndpoints < ActiveRecord::Migration
     create_table :endpoints do |t|
       t.text :url
       t.string :name, limit: 30
-      t.reference :user
+      t.references :user
 
       t.timestamps null: false
     end
