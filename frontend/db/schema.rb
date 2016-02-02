@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202191135) do
+ActiveRecord::Schema.define(version: 20160202194855) do
 
   create_table "endpoints", force: :cascade do |t|
-    t.text     "url"
-    t.string   "name",       limit: 30
-    t.integer  "user_id"
+    t.text     "url",                   null: false
+    t.string   "name",       limit: 30, null: false
+    t.integer  "user_id",               null: false
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",        limit: 30
+    t.string   "username",        limit: 30, null: false
     t.string   "password_digest"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
