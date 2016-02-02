@@ -3,9 +3,9 @@
 one:
   url: MyText
   name: MyString
-  user: 
+  user: User One
 
 two:
   url: MyText
   name: MyString
-  user: 
+  user: User One
