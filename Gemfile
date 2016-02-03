@@ -52,5 +52,14 @@ group :development do
 
   # Integrate Capistrano with Rails
   gem 'capistrano-rails'
+
+  # And use RVM
+  gem 'capistrano-rvm'
+
+  # Auto-restart Passenger after deployment
+  gem 'capistrano-passenger'
+
+  # Deploy secrets.yml residing outside git
+  gem 'capistrano-secrets-yml'
 end
 
