@@ -35,6 +35,9 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Devise for user authentification
 gem 'devise'
 
+# Need Rake for Travis and production use
+gem 'rake'
+
 group :production do
   # Use MySQL for production
   gem 'mysql2'
