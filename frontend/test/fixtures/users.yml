@@ -1,5 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one: {}
+one:
+  email: one@example.com
+  encrypted_password: password1
 
-two: {}
+two:
+  email: two@example.com
+  encrypted_password: password2
+
