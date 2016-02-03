@@ -35,6 +35,11 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Devise for user authentification
 gem 'devise'
 
+group :production do
+  # Use MySQL for production
+  gem 'mysql2'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
