@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202194855) do
+ActiveRecord::Schema.define(version: 20160203143826) do
 
   create_table "endpoints", force: :cascade do |t|
     t.text     "url",                   null: false
@@ -22,12 +22,8 @@ ActiveRecord::Schema.define(version: 20160202194855) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",        limit: 30, null: false
-    t.string   "password_digest"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
-
-  add_index "users", ["username"], name: "index_users_on_username", unique: true
 
 end
