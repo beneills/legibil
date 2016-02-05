@@ -6,30 +6,30 @@ class EndpointTest < ActiveSupport::TestCase
 
   test "should not save endpoint without url" do
     endpoint = Endpoint.new
-    endpoint.name = "Test Endpoint"
-    endpoint.user = users(:one)
+    endpoint.name = "serve"
+    endpoint.user = users(:chef)
     assert_not endpoint.save, "Saved the endpoint without url"
   end
 
   test "should not save endpoint without name" do
     endpoint = Endpoint.new
-    endpoint.url = "http://example.com/resource"
-    endpoint.user = users(:one)
+    endpoint.url = "example.com/restaurant/serve"
+    endpoint.user = users(:chef)
     assert_not endpoint.save, "Saved the endpoint without name"
   end
 
   test "should not save endpoint without user" do
     endpoint = Endpoint.new
-    endpoint.url = "http://example.com/resource"
-    endpoint.name = "Test Endpoint"
+    endpoint.url = "example.com/restaurant/serve"
+    endpoint.name = "serve"
     assert_not endpoint.save, "Saved the endpoint without user"
   end
 
   test "should not save endpoint with long name" do
     endpoint = Endpoint.new
-    endpoint.url = "http://example.com/resource"
+    endpoint.url = "example.com/restaurant/serve"
     endpoint.name = "a" * 31
-    endpoint.user = users(:one)
+    endpoint.user = users(:chef)
     assert_not endpoint.save, "Saved the endpoint with a long name"
   end
 
@@ -37,17 +37,17 @@ class EndpointTest < ActiveSupport::TestCase
 
   test "should save endpoint with longish name" do
     endpoint = Endpoint.new
-    endpoint.url = "http://example.com/resource"
+    endpoint.url = "example.com/restaurant/serve"
     endpoint.name = "a" * 30
-    endpoint.user = users(:one)
+    endpoint.user = users(:chef)
     assert endpoint.save, "Couldn't save the endpoint with a longish name"
   end
 
   test "should save endpoint with good data" do
     endpoint = Endpoint.new
-    endpoint.url = "http://example.com/resource"
-    endpoint.name = "Test Endpoint"
-    endpoint.user = users(:one)
+    endpoint.url = "example.com/restaurant/serve"
+    endpoint.name = "serve"
+    endpoint.user = users(:chef)
     assert endpoint.save, "Couldn't save the endpoint with good data"
   end
 end

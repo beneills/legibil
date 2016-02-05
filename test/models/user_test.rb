@@ -12,13 +12,13 @@ class UserTest < ActiveSupport::TestCase
 
   test "should not save user without password" do
     user = User.new
-    user.email    = "user1@example.com"
+    user.email    = "user@example.com"
     assert_not user.save, "Couldn't save the user with good data"
   end
 
   test "should not save user with short password" do
     user = User.new
-    user.email    = "user1@example.com"
+    user.email    = "user@example.com"
     user.password = "a" * 7
     assert_not user.save, "Couldn't save the user with good data"
   end
@@ -27,7 +27,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "should save user with good data" do
     user = User.new
-    user.email    = "user1@example.com"
+    user.email    = "user@example.com"
     user.password = "password"
     assert user.save, "Couldn't save the user with good data"
   end
