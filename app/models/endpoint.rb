@@ -7,7 +7,7 @@ class Endpoint < ActiveRecord::Base
 
   validates_length_of :name, :mininum => 1, :maximum => 30
 
-  validate :uniqueness_of_url_and_name_per_user
+  validate :uniqueness_of_url_and_name_per_user, :on => :create
 
   def uniqueness_of_url_and_name_per_user
     unless self.user.nil?

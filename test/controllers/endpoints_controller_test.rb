@@ -49,7 +49,6 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: 'name3', url: 'url3' }
     end
 
-    # expect conflict
     assert_response 409
   end
 
@@ -61,6 +60,14 @@ class EndpointsControllerTest < ActionController::TestCase
     end
 
     assert_response 409
+  end
+
+  test "should not update endpoint owned by another user" do
+    sign_in users(:one)
+
+    patch :update, id: users(:two).endpoints.first, endpoint: { name: 'n', url: 'u' }
+
+    assert_response 403
   end
 
   # positive tests
@@ -79,10 +86,13 @@ class EndpointsControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
-  # test "should update endpoint" do
-  #   patch :update, id: @endpoint, endpoint: { name: @endpoint.name, url: @endpoint.url }
-  #   assert_redirected_to endpoint_path(assigns(:endpoint))
-  # end
+  test "should update endpoint" do
+    sign_in users(:one)
+
+    patch :update, id: @endpoint, endpoint: { name: @endpoint.name, url: @endpoint.url }
+
+    assert_redirected_to root_url
+  end
 
   # test "should destroy endpoint" do
   #   assert_difference('Endpoint.count', -1) do

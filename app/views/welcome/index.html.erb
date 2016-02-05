@@ -50,6 +50,16 @@
         <td><%= endpoint.name %></td>
         <td><%= endpoint.user.email  %></td>
         <td><%= link_to 'Destroy', endpoint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+
+        <%= form_for(endpoint) do |f| %>
+          <td>
+            <%= f.label :name %>
+            <%= f.text_field :name %>
+          </td>
+          <td>
+            <%= f.submit %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
