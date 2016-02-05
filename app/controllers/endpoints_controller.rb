@@ -10,14 +10,14 @@ class EndpointsController < ApplicationController
 
         if @endpoint.save
           format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
-          format.json { render :show, status: :created, location: @endpoint }
+          format.json { head :created }
         else
-          format.html { render :new }
-          format.json { render json: @endoint.errors, status: :unprocessable_entity }
+          format.html { head :conflict }
+          format.json { render json: @endpoint.errors, status: :unprocessable_entity }
         end
       else
-          format.html { render :new, status: :forbidden }
-          format.json { render json: @endoint.errors, status: :forbidden }
+          format.html { head :forbidden }
+          format.json { head :forbidden }
       end
     end
   end
