@@ -13,24 +13,32 @@ class EndpointTest < ActiveSupport::TestCase
 
   test "should not save endpoint without name" do
     endpoint = Endpoint.new
-    endpoint.url = "example.com/restaurant/serve"
+    endpoint.url  = "example.com/restaurant/serve"
     endpoint.user = users(:chef)
     assert_not endpoint.save, "Saved the endpoint without name"
   end
 
   test "should not save endpoint without user" do
     endpoint = Endpoint.new
-    endpoint.url = "example.com/restaurant/serve"
+    endpoint.url  = "example.com/restaurant/serve"
     endpoint.name = "serve"
     assert_not endpoint.save, "Saved the endpoint without user"
   end
 
   test "should not save endpoint with long name" do
     endpoint = Endpoint.new
-    endpoint.url = "example.com/restaurant/serve"
+    endpoint.url  = "example.com/restaurant/serve"
     endpoint.name = "a" * 31
     endpoint.user = users(:chef)
     assert_not endpoint.save, "Saved the endpoint with a long name"
+  end
+
+  test "should not save endpoint with bad url" do
+    endpoint = Endpoint.new
+    endpoint.url  = "bad url"
+    endpoint.name = "serve"
+    endpoint.user = users(:chef)
+    assert_not endpoint.save, "Saved the endpoint with a bad url"
   end
 
   # positive tests
