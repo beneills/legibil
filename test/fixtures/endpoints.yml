@@ -1,16 +1,26 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  url: site.com/one
-  name: site_one
-  user: one
+cook:
+  url: example.com/restaurant/cook
+  name: cook
+  user: chef
 
-two:
-  url: site.com/two
-  name: site_two
-  user: one
+tip:
+  url: example.com/restaurant/tip
+  name: tip
+  user: chef
 
-three:
-  url: site.com/three
-  name: site_three
-  user: two
+clean_restaurant:
+  url: example.com/restaurant/clean
+  name: clean
+  user: chef
+
+bake:
+  url: example.com/bakery/bake
+  name: bake
+  user: baker
+
+clean_restaurant:
+  url: example.com/bakery/clean
+  name: clean
+  user: baker
