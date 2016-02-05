@@ -69,6 +69,15 @@ class EndpointsControllerTest < ActionController::TestCase
 
     assert_response 403
   end
+  test "should not destroy endpoint owned by another user" do
+    sign_in users(:one)
+
+    assert_difference('Endpoint.count', -1) do
+      delete :destroy, id: @endpoint
+    end
+
+    assert_redirected_to root_url
+  end
 
   # positive tests
 
@@ -94,11 +103,13 @@ class EndpointsControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
-  # test "should destroy endpoint" do
-  #   assert_difference('Endpoint.count', -1) do
-  #     delete :destroy, id: @endpoint
-  #   end
+  test "should destroy endpoint" do
+    sign_in users(:one)
 
-  #   assert_redirected_to endpoints_path
-  # end
+    assert_difference('Endpoint.count', -1) do
+      delete :destroy, id: @endpoint
+    end
+
+    assert_redirected_to root_url
+  end
 end
