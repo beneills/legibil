@@ -2,3 +2,55 @@
 
 <h1>Welcome#index</h1>
 <p>Find me in app/views/welcome/index.html.erb</p>
+
+<hr>
+
+<%= form_for(@new_endpoint) do |f| %>
+  <% if @new_endpoint.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@new_endpoint.errors.count, "error") %> prohibited this endpoint from being saved:</h2>
+
+      <ul>
+      <% @new_endpoint.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :url %><br>
+    <%= f.text_field :url %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<hr>
+
+<table>
+  <thead>
+    <tr>
+      <th>Url</th>
+      <th>Name</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @endpoints.each do |endpoint| %>
+      <tr>
+        <td><%= endpoint.url %></td>
+        <td><%= endpoint.name %></td>
+        <td><%= endpoint.user.email  %></td>
+        <td><%= link_to 'Destroy', endpoint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

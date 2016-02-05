@@ -1,38 +1,23 @@
 class EndpointsController < ApplicationController
-  before_action :set_endpoint, only: [:show, :edit, :update, :destroy]
-
-  # GET /endpoints
-  # GET /endpoints.json
-  def index
-    @endpoints = Endpoint.all
-  end
-
-  # GET /endpoints/1
-  # GET /endpoints/1.json
-  def show
-  end
-
-  # GET /endpoints/new
-  def new
-    @endpoint = Endpoint.new
-  end
-
-  # GET /endpoints/1/edit
-  def edit
-  end
+  before_action :set_endpoint, only: [:update, :destroy]
 
   # POST /endpoints
   # POST /endpoints.json
   def create
-    @endpoint = Endpoint.new(endpoint_params)
-
     respond_to do |format|
-      if @endpoint.save
-        format.html { redirect_to @endpoint, notice: 'Endpoint was successfully created.' }
-        format.json { render :show, status: :created, location: @endpoint }
+      if user_signed_in?
+        @endpoint = current_user.endpoints.build(endpoint_params)
+
+        if @endpoint.save
+          format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
+          format.json { render :show, status: :created, location: @endpoint }
+        else
+          format.html { render :new }
+          format.json { render json: @endoint.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :new }
-        format.json { render json: @endpoint.errors, status: :unprocessable_entity }
+          format.html { render :new, status: :forbidden }
+          format.json { render json: @endoint.errors, status: :forbidden }
       end
     end
   end
@@ -42,7 +27,7 @@ class EndpointsController < ApplicationController
   def update
     respond_to do |format|
       if @endpoint.update(endpoint_params)
-        format.html { redirect_to @endpoint, notice: 'Endpoint was successfully updated.' }
+        format.html { redirect_to root_url, notice: 'Endpoint was successfully updated.' }
         format.json { render :show, status: :ok, location: @endpoint }
       else
         format.html { render :edit }
@@ -56,7 +41,7 @@ class EndpointsController < ApplicationController
   def destroy
     @endpoint.destroy
     respond_to do |format|
-      format.html { redirect_to endpoints_url, notice: 'Endpoint was successfully destroyed.' }
+      format.html { redirect_to root_url, notice: 'Endpoint was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -69,6 +54,6 @@ class EndpointsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def endpoint_params
-      params.require(:endpoint).permit(:url, :name, :user)
+      params.require(:endpoint).permit(:url, :name)
     end
 end
