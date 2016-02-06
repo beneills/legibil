@@ -31,8 +31,7 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: 'slice', url: 'example.con/butchers/cut' }
     end
 
-    # expect conflict
-    assert_response 409
+    assert_response 422
   end
 
   test "should not create endpoints with duplicate names" do
@@ -50,7 +49,7 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: 'order', url: 'example.com/butchers/purchase' }
     end
 
-    assert_response 409
+    assert_response 422
   end
 
   test "should not create endpoint with short name" do
@@ -60,7 +59,7 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: '', url: 'example.com/endpoint' }
     end
 
-    assert_response 409
+    assert_response 422
   end
 
   test "should not update endpoint owned by another user" do
@@ -86,41 +85,62 @@ class EndpointsControllerTest < ActionController::TestCase
   test "should create endpoint" do
     sign_in users(:butcher)
 
+    # HTML
     assert_difference('Endpoint.count') do
-      post :create, endpoint: endpoint_data
+      post :create, endpoint: endpoint_data('create_html')
     end
 
-    assert_equal(endpoint_data[:name], Endpoint.last.name)
-    assert_equal(endpoint_data[:url],  Endpoint.last.url)
-    assert_equal(users(:butcher).id,   Endpoint.last.user.id)
-
+    assert_equal(endpoint_data('create_html')[:name], Endpoint.last.name)
+    assert_equal(endpoint_data('create_html')[:url],  Endpoint.last.url)
+    assert_equal(users(:butcher).id,                  Endpoint.last.user.id)
     assert_redirected_to root_url
+
+    # JSON
+    post :create, format: :json, endpoint: endpoint_data('create_json')
+
+    assert_response 201
+    assert_empty    @response.body
   end
 
   test "should update endpoint" do
     sign_in users(:butcher)
 
-    post :create, endpoint: endpoint_data
-
-    patch :update, id: users(:butcher).endpoints.first, endpoint: endpoint_data
+    # HTML
+    post :create, endpoint: endpoint_data('update_html')
+    patch :update, id: users(:butcher).endpoints.first, endpoint: endpoint_data('update')
 
     assert_redirected_to root_url
+
+    # JSON
+    post :create, format: :json, endpoint: endpoint_data('update_json')
+    patch :update, format: :json, id: users(:butcher).endpoints.first, endpoint: endpoint_data('update_json')
+
+    assert_response 200
+    assert_empty    @response.body
   end
 
   test "should destroy endpoint" do
     sign_in users(:butcher)
 
-    post :create, endpoint: endpoint_data
+    # HTML
+    post :create, endpoint: endpoint_data('delete_html')
 
     assert_difference('Endpoint.count', -1) do
       delete :destroy, id: users(:butcher).endpoints.first
     end
 
     assert_redirected_to root_url
+
+    # JSON
+    post :create, format: :json, endpoint: endpoint_data('delete_json')
+    delete :destroy, format: :json, id: users(:butcher).endpoints.first
+
+    assert_response 204
+    assert_empty    @response.body
   end
 
   private
-    def endpoint_data
-      { name: 'my endpoint', url: 'example.com/endpoint' }
+    def endpoint_data(identifier = '')
+      { name: "my endpoint#{identifier}", url: "example.com/endpoint#{identifier}" }
     end
 end

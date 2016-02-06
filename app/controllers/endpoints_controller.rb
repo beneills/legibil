@@ -13,7 +13,7 @@ class EndpointsController < ApplicationController
         format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
         format.json { head :created }
       else
-        format.html { head :conflict }
+        format.html { head :unprocessable_entity }
         format.json { render json: @endpoint.errors, status: :unprocessable_entity }
       end
     end
@@ -27,7 +27,7 @@ class EndpointsController < ApplicationController
         format.html { redirect_to root_url, notice: 'Endpoint was successfully updated.' }
         format.json { head :ok }
       else
-        format.html { render :conflict }
+        format.html { head :unprocessable_entity }
         format.json { render json: @endpoint.errors, status: :unprocessable_entity }
       end
     end
