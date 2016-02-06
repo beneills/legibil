@@ -13,7 +13,7 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: endpoint_data
     end
 
-    assert_response 403
+    assert_response :forbidden
   end
 
   test "should not create endpoints with duplicate urls" do
@@ -24,14 +24,12 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: 'chop', url: 'example.con/butchers/cut' }
     end
 
-    assert_response 302
-
     # make second endpoint
     assert_no_difference('Endpoint.count') do
       post :create, endpoint: { name: 'slice', url: 'example.con/butchers/cut' }
     end
 
-    assert_response 422
+    assert_response :unprocessable_entity
   end
 
   test "should not create endpoints with duplicate names" do
@@ -42,14 +40,12 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: 'order', url: 'example.com/butchers/buy' }
     end
 
-    assert_response 302
-
     # make second endpoint
     assert_no_difference('Endpoint.count') do
       post :create, endpoint: { name: 'order', url: 'example.com/butchers/purchase' }
     end
 
-    assert_response 422
+    assert_response :unprocessable_entity
   end
 
   test "should not create endpoint with short name" do
@@ -59,7 +55,7 @@ class EndpointsControllerTest < ActionController::TestCase
       post :create, endpoint: { name: '', url: 'example.com/endpoint' }
     end
 
-    assert_response 422
+    assert_response :unprocessable_entity
   end
 
   test "should not update endpoint owned by another user" do
@@ -67,7 +63,7 @@ class EndpointsControllerTest < ActionController::TestCase
 
     patch :update, id: users(:chef).endpoints.first, endpoint: endpoint_data
 
-    assert_response 403
+    assert_response :forbidden
   end
 
   test "should not destroy endpoint owned by another user" do
@@ -77,7 +73,7 @@ class EndpointsControllerTest < ActionController::TestCase
       delete :destroy, id: users(:chef).endpoints.first
     end
 
-    assert_response 403
+    assert_response :forbidden
   end
 
   # positive tests
@@ -98,7 +94,7 @@ class EndpointsControllerTest < ActionController::TestCase
     # JSON
     post :create, format: :json, endpoint: endpoint_data('create_json')
 
-    assert_response 201
+    assert_response :created
     assert_empty    @response.body
   end
 
@@ -115,7 +111,7 @@ class EndpointsControllerTest < ActionController::TestCase
     post :create, format: :json, endpoint: endpoint_data('update_json')
     patch :update, format: :json, id: users(:butcher).endpoints.first, endpoint: endpoint_data('update_json')
 
-    assert_response 200
+    assert_response :ok
     assert_empty    @response.body
   end
 
@@ -135,7 +131,7 @@ class EndpointsControllerTest < ActionController::TestCase
     post :create, format: :json, endpoint: endpoint_data('delete_json')
     delete :destroy, format: :json, id: users(:butcher).endpoints.first
 
-    assert_response 204
+    assert_response :no_content
     assert_empty    @response.body
   end
 
