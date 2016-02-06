@@ -1,6 +1,9 @@
 require 'mini_magick'
 require 'tempfile'
 
+GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
+RenderFocusAreaError = Class.new(StandardError)
+
 class ManuallyRefreshEndpointJob < ActiveJob::Base
   queue_as :urgent
 
@@ -12,7 +15,11 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
 
     # render focus area and attach to endpoint
     save_focus_area(endpoint, screenshot)
-
+  rescue GrabPageError => e
+    logger.error "error while grabbing screenshot: #{e.message}"
+  rescue RenderFocusAreaError => e
+    logger.error "error while rendering focus area: #{e.message}"
+  else
     # update refresh time
     endpoint.last_refreshed_at = Time.now
     endpoint.save!
@@ -26,9 +33,12 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
     driver = Selenium::WebDriver.for :firefox
     driver.get url
     driver.save_screenshot(screenshot)
-    driver.quit
 
     screenshot
+  rescue Selenium::WebDriver::Error::WebDriverError => e
+    raise GrabPageError, e.message
+  ensure
+    driver.quit if defined? driver
   end
 
   def new_focus_view_image_filename
@@ -95,5 +105,7 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
       focus_view.screenshot = f
       focus_view.save!
     end
+  rescue MiniMagick::Error, MiniMagick::Invalid => e
+    raise RenderFocusAreaError, e.message
   end
 end
