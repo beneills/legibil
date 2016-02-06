@@ -38,6 +38,12 @@ gem 'devise'
 # Need Rake for Travis and production use
 gem 'rake'
 
+# For rendering web pages
+gem 'selenium-webdriver'
+
+# For image manipulation
+gem 'mini_magick'
+
 group :production do
   # Use MySQL for production
   gem 'mysql2'

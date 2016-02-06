@@ -1,26 +1,26 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 cook:
-  url: example.com/restaurant/cook
+  url: http://example.com/restaurant/cook
   name: cook
   user: chef
 
 tip:
-  url: example.com/restaurant/tip
+  url: http://example.com/restaurant/tip
   name: tip
   user: chef
 
 clean_restaurant:
-  url: example.com/restaurant/clean
+  url: http://example.com/restaurant/clean
   name: clean
   user: chef
 
 bake:
-  url: example.com/bakery/bake
+  url: http://example.com/bakery/bake
   name: bake
   user: baker
 
 clean_restaurant:
-  url: example.com/bakery/clean
+  url: http://example.com/bakery/clean
   name: clean
   user: baker

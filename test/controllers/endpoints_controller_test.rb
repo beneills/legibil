@@ -162,6 +162,6 @@ class EndpointsControllerTest < ActionController::TestCase
 
   private
     def endpoint_data(identifier = '')
-      { name: "my endpoint#{identifier}", url: "example.com/endpoint#{identifier}" }
+      { name: "my endpoint#{identifier}", url: "http://example.com/endpoint#{identifier}" }
     end
 end
