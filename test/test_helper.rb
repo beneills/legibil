@@ -6,7 +6,9 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  def refreshed_recently?(endpoint)
+    endpoint.ever_refreshed? and (Time.now - endpoint.last_refreshed_at).abs < 1
+  end
 end
 
 class ActionController::TestCase

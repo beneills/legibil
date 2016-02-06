@@ -47,15 +47,10 @@ class EndpointsController < ApplicationController
   # PATCH /endpoints/1/refresh.json
   def refresh
     respond_to do |format|
-      @endpoint.last_refreshed_at = Time.now
+      ManuallyRefreshEndpointJob.perform_later @endpoint
 
-      if @endpoint.save
-        format.html { redirect_to root_url, notice: 'Endpoint was successfully refreshed.' }
-        format.json { head :ok }
-      else
-        format.html { head :unprocessable_entity }
-        format.json { render json: @endpoint.errors, status: :unprocessable_entity }
-      end
+      format.html { redirect_to root_url, notice: 'Endpoint refreshing.' }
+      format.json { head :ok }
     end
   end
 

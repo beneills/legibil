@@ -164,8 +164,4 @@ class EndpointsControllerTest < ActionController::TestCase
     def endpoint_data(identifier = '')
       { name: "my endpoint#{identifier}", url: "example.com/endpoint#{identifier}" }
     end
-
-    def refreshed_recently?(endpoint)
-      (Time.now - endpoint.last_refreshed_at).abs < 1
-    end
 end
