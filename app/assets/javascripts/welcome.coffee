@@ -13,8 +13,8 @@ jQuery ->
     url = $(this).val()
     if url.length
       if validUrl(url)
-        $(this).css('border-color', 'green')
+        $(this).css('background-color', '#DDFFDD')
       else
-        $(this).css('border-color', 'red')
+        $(this).css('background-color', '#FFDDDD')
     else
-      $(this).css('border-color', 'white')
+      $(this).css('background-color', 'white')
