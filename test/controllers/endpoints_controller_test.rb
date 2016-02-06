@@ -122,21 +122,50 @@ class EndpointsControllerTest < ActionController::TestCase
     post :create, endpoint: endpoint_data('delete_html')
 
     assert_difference('Endpoint.count', -1) do
-      delete :destroy, id: users(:butcher).endpoints.first
+      delete :destroy, id: users(:butcher).endpoints.last
     end
 
     assert_redirected_to root_url
 
     # JSON
     post :create, format: :json, endpoint: endpoint_data('delete_json')
-    delete :destroy, format: :json, id: users(:butcher).endpoints.first
+    delete :destroy, format: :json, id: users(:butcher).endpoints.last
 
     assert_response :no_content
     assert_empty    @response.body
   end
 
+  test "should refresh endpoint" do
+    sign_in users(:butcher)
+
+    # HTML
+    post :create, endpoint: endpoint_data('refresh_html')
+
+    assert_not Endpoint.last.ever_refreshed?
+
+    patch :refresh, id: users(:butcher).endpoints.last
+
+    assert_redirected_to root_url
+    assert( refreshed_recently? Endpoint.last )
+
+    # JSON
+    post :create, format: :json, endpoint: endpoint_data('refresh_json')
+
+    assert_not Endpoint.last.ever_refreshed?
+
+    patch :refresh, format: :json, id: users(:butcher).endpoints.last
+
+    assert_response :ok
+    assert_empty    @response.body
+    assert( refreshed_recently? Endpoint.last )
+  end
+
   private
     def endpoint_data(identifier = '')
       { name: "my endpoint#{identifier}", url: "example.com/endpoint#{identifier}" }
+    end
+
+    def refreshed_recently?(endpoint)
+      (Time.now - endpoint.last_refreshed_at).abs < 1
     end
 end

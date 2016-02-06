@@ -1,7 +1,7 @@
 class EndpointsController < ApplicationController
   before_action :forbid_non_users
-  before_action :set_endpoint,             only: [:update, :destroy]
-  before_action :check_endpoint_ownership, only: [:update, :destroy]
+  before_action :set_endpoint,             only: [:update, :destroy, :refresh]
+  before_action :check_endpoint_ownership, only: [:update, :destroy, :refresh]
 
   # POST /endpoints
   # POST /endpoints.json
@@ -40,6 +40,22 @@ class EndpointsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to root_url, notice: 'Endpoint was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  # PATCH /endpoints/1/refresh
+  # PATCH /endpoints/1/refresh.json
+  def refresh
+    respond_to do |format|
+      @endpoint.last_refreshed_at = Time.now
+
+      if @endpoint.save
+        format.html { redirect_to root_url, notice: 'Endpoint was successfully refreshed.' }
+        format.json { head :ok }
+      else
+        format.html { head :unprocessable_entity }
+        format.json { render json: @endpoint.errors, status: :unprocessable_entity }
+      end
     end
   end
 
