@@ -24,6 +24,10 @@ class Endpoint < ActiveRecord::Base
     end
   end
 
+  def ever_refreshed?
+    not self.last_refreshed_at.nil?
+  end
+
   private
     def good_url
       uri = URI.parse(self.url)

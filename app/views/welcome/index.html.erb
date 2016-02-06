@@ -52,6 +52,7 @@
       <th>Url</th>
       <th>Name</th>
       <th>User</th>
+      <th>Last Refresh</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -62,6 +63,13 @@
         <td><%= endpoint.url %></td>
         <td><%= endpoint.name %></td>
         <td><%= endpoint.user.email  %></td>
+        <td>
+          <% if endpoint.ever_refreshed? %>
+            <%= endpoint.last_refreshed_at %>
+          <% else %>
+            not yet refreshed
+          <% end %>
+        </td>
         <td><%= link_to 'Destroy', endpoint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
 
         <%= form_for(endpoint) do |f| %>
