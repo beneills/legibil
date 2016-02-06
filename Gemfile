@@ -44,6 +44,9 @@ gem 'selenium-webdriver'
 # For image manipulation
 gem 'mini_magick'
 
+# For holding view images and other file data
+gem 'paperclip'
+
 group :production do
   # Use MySQL for production
   gem 'mysql2'

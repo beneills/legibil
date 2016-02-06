@@ -41,6 +41,18 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
     end
     result.write '/tmp/page_focus_view.png'
 
+    # save focus view screenshot
+    File.open('/tmp/page_focus_view.png') do |f|
+      # TODO does this successfully update?
+      focus_view = endpoint.build_focus_view
+
+      focus_view.screenshot = f
+
+      unless focus_view.save
+        logger.error "could not save focus view/screenshot for endpoint #{endpoint.id}"
+      end
+    end
+
     # update refresh time
     endpoint.last_refreshed_at = Time.now
     unless endpoint.save

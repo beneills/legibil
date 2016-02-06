@@ -46,19 +46,19 @@
 
 <hr>
 
-<table>
-  <thead>
-    <tr>
-      <th>Url</th>
-      <th>Name</th>
-      <th>User</th>
-      <th>Last Refresh</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<% @endpoints.each do |endpoint| %>
+  <table>
+    <thead>
+      <tr>
+        <th>Url</th>
+        <th>Name</th>
+        <th>User</th>
+        <th>Last Refresh</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <% @endpoints.each do |endpoint| %>
+    <tbody>
       <tr>
         <td><%= endpoint.url %></td>
         <td><%= endpoint.name %></td>
@@ -83,6 +83,15 @@
           </td>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </tbody>
+
+  </table>
+
+  <% unless endpoint.focus_view.nil? or endpoint.focus_view.screenshot.nil? %>
+    <%= image_tag endpoint.focus_view.screenshot.url %>
+  <% else %>
+    not yet refreshed
+  <% end %>
+
+  <hr>
+<% end %>

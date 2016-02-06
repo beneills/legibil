@@ -2,6 +2,7 @@ require 'uri'
 
 class Endpoint < ActiveRecord::Base
   belongs_to :user
+  has_one    :focus_view
 
   validates :url,  presence: true
   validates :name, presence: true

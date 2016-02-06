@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160206113310) do
+ActiveRecord::Schema.define(version: 20160206165223) do
 
   create_table "endpoints", force: :cascade do |t|
     t.text     "url",                          null: false
@@ -21,6 +21,18 @@ ActiveRecord::Schema.define(version: 20160206113310) do
     t.datetime "updated_at",                   null: false
     t.datetime "last_refreshed_at"
   end
+
+  create_table "focus_views", force: :cascade do |t|
+    t.integer  "endpoint_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "screenshot_file_name"
+    t.string   "screenshot_content_type"
+    t.integer  "screenshot_file_size"
+    t.datetime "screenshot_updated_at"
+  end
+
+  add_index "focus_views", ["endpoint_id"], name: "index_focus_views_on_endpoint_id"
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at",                          null: false
