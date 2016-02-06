@@ -5,6 +5,19 @@
 
 <hr>
 
+<% unless user_signed_in? %>
+  <%= form_for(:user, :url => session_path(:user)) do |f| %>
+    <%= f.text_field :email %>
+    <%= f.password_field :password %>
+    <%= f.check_box :remember_me %>
+    <%= f.label :remember_me %>
+    <%= f.submit 'Sign in' %>
+    <%= link_to "Forgot your password?", new_password_path(:user) %>
+  <% end %>
+<% end %>
+
+<hr>
+
 <%= form_for(@new_endpoint) do |f| %>
   <% if @new_endpoint.errors.any? %>
     <div id="error_explanation">
