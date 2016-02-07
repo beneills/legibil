@@ -71,8 +71,16 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
       status = wait_thr.value
       out    = stdout.read
       err    = stderr.read
+
       unless status.success? and err.empty?
         error = "webkit2png failed with exit status: #{status}, stderr: #{std}, stdout: #{out}"
+
+        logger.error error
+        raise GrabPageError, error
+      end
+
+      unless File.file? screenshot_path
+        error = "webkit2png failed to produce a screenshot file: #{out}"
 
         logger.error error
         raise GrabPageError, error
