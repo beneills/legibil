@@ -39,6 +39,8 @@ class RefreshEndpointJob < ActiveJob::Base
     screenshot
   rescue Selenium::WebDriver::Error::WebDriverError => e
     raise GrabPageError, e.message
+  rescue Net::ReadTimeout
+    raise GrabPageError, 'Timeout while grabbing page'
   ensure
     driver.quit if defined? driver
   end
