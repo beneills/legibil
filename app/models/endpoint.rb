@@ -5,7 +5,8 @@ class Endpoint < ActiveRecord::Base
   has_one    :focus_view
 
   has_attached_file :screenshot, default_url: "/images/:style/missing.png"
-  validates_attachment_content_type :screenshot, content_type: /\Aimage\/.*\Z/
+  validates_with AttachmentContentTypeValidator, attributes: :screenshot, content_type: /\Aimage\/.*\Z/
+  validates_with AttachmentSizeValidator,        attributes: :screenshot, less_than: 1.megabytes
 
   validates :url,  presence: true
   validates :name, presence: true
