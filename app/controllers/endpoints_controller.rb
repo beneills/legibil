@@ -10,6 +10,9 @@ class EndpointsController < ApplicationController
       @endpoint = current_user.endpoints.build(endpoint_params)
 
       if @endpoint.save
+        # auto-trigger refresh
+        RefreshEndpointJob.perform_later @endpoint
+
         format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
         format.json { head :created }
       else

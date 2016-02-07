@@ -141,7 +141,11 @@ class EndpointsControllerTest < ActionController::TestCase
     # HTML
     post :create, endpoint: endpoint_data('refresh_html')
 
-    assert_not Endpoint.last.ever_refreshed?
+    # check refresh is auto-triggered
+    assert( refreshed_recently? Endpoint.last )
+
+    # wait a bit
+    sleep 2
 
     patch :refresh, id: users(:butcher).endpoints.last
 

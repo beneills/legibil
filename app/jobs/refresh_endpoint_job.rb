@@ -73,7 +73,7 @@ class RefreshEndpointJob < ActiveJob::Base
       err    = stderr.read
 
       unless status.success? and err.empty?
-        error = "webkit2png failed with exit status: #{status}, stderr: #{std}, stdout: #{out}"
+        error = "webkit2png failed with exit status: #{status}, stderr: #{err}, stdout: #{out}"
 
         logger.error error
         raise GrabPageError, error
