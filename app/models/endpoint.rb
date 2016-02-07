@@ -29,10 +29,27 @@ class Endpoint < ActiveRecord::Base
     not self.last_refreshed_at.nil?
   end
 
+  # assume http protocol if no protocol identifier is present
+  def url_with_protocol
+    possibly_add_protocol self.url
+  end
+
   private
+    def possibly_add_protocol(resource)
+      if resource.include?(':')
+        resource
+      else
+        "http://#{resource}"
+      end
+    end
+
     def good_url
-      uri = URI.parse(self.url)
-      uri.kind_of?(URI::HTTP)
+      unless self.url.nil?
+        uri = URI.parse(possibly_add_protocol(self.url))
+        uri.kind_of?(URI::HTTP)
+      else
+        false
+      end
     rescue URI::InvalidURIError
       errors.add(:url, 'is bad')
     end

@@ -11,7 +11,7 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
     logger.debug "refreshing endpoint #{endpoint.url} by user #{endpoint.user.email}"
 
     # grab page screenshot
-    screenshot = grab_page_screenshot(endpoint.url)
+    screenshot = grab_page_screenshot(endpoint.url_with_protocol)
 
     # render focus area and attach to endpoint
     save_focus_area(endpoint, screenshot)
