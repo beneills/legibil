@@ -155,7 +155,11 @@ class EndpointsControllerTest < ActionController::TestCase
     # JSON
     post :create, format: :json, endpoint: endpoint_data('refresh_json')
 
-    assert_not Endpoint.last.ever_refreshed?
+    # check refresh is auto-triggered
+    assert( refreshed_recently? Endpoint.last )
+
+    # wait a bit
+    sleep 2
 
     patch :refresh, format: :json, id: users(:butcher).endpoints.last
 

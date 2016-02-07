@@ -53,6 +53,7 @@
         <th>Url</th>
         <th>Name</th>
         <th>User</th>
+        <th>Refreshing?</th>
         <th>Last Refresh</th>
         <th colspan="3"></th>
       </tr>
@@ -62,9 +63,10 @@
       <tr>
         <td><%= endpoint.url %></td>
         <td><%= endpoint.name %></td>
-        <td><%= endpoint.user.email  %></td>
+        <td><%= endpoint.user.email %></td>
+        <td><%= endpoint.refreshing? %></td>
         <td>
-          <% if endpoint.ever_refreshed? %>
+          <% if endpoint.ever_successfully_refreshed? %>
             <%= endpoint.last_refreshed_at %>
           <% else %>
             not yet refreshed

@@ -9,8 +9,10 @@ class EndpointsController < ApplicationController
     respond_to do |format|
       @endpoint = current_user.endpoints.build(endpoint_params)
 
+      # auto-trigger refresh
+      @endpoint.last_refresh_request_at = Time.now
+
       if @endpoint.save
-        # auto-trigger refresh
         RefreshEndpointJob.perform_later @endpoint
 
         format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
@@ -50,10 +52,19 @@ class EndpointsController < ApplicationController
   # PATCH /endpoints/1/refresh.json
   def refresh
     respond_to do |format|
-      RefreshEndpointJob.perform_later @endpoint
+      @endpoint.last_refresh_request_at = Time.now
 
-      format.html { redirect_to root_url, notice: 'Endpoint refreshing.' }
-      format.json { head :ok }
+      if @endpoint.save
+        RefreshEndpointJob.perform_later @endpoint
+
+        format.html { redirect_to root_url, notice: 'Endpoint refreshing.' }
+        format.json { head :ok }
+      else
+        format.html { head :unprocessable_entity }
+        format.json { render json: @endpoint.errors, status: :unprocessable_entity }
+      end
+
+      RefreshEndpointJob.perform_later @endpoint
     end
   end
 

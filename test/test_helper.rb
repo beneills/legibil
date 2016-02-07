@@ -9,7 +9,7 @@ class ActiveSupport::TestCase
   setup :ensure_rails_tmp_exists
 
   def refreshed_recently?(endpoint)
-    endpoint.ever_refreshed? and (Time.now - endpoint.last_refreshed_at).abs < 1
+    endpoint.ever_successfully_refreshed? and (Time.now - endpoint.last_refreshed_at).abs < 1
   end
 
   private
