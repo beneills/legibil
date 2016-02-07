@@ -6,3 +6,11 @@ ux
 ==
 
 A web app for automated UX testing.
+
+Dependencies
+============
+
+* ruby-rails
+* imagemagick
+* firefox
+* running X server
