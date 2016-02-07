@@ -15,6 +15,12 @@ class RefreshEndpointJob < ActiveJob::Base
     # grab page screenshot
     screenshot = grab_page_screenshot(endpoint.url_with_protocol)
 
+    # save screenshot to endpoint
+    File.open(screenshot) do |f|
+      endpoint.screenshot = f
+      endpoint.save!
+    end
+
     # render focus area and attach to endpoint
     save_focus_area(endpoint, screenshot)
   rescue GrabPageError => e
@@ -92,9 +98,27 @@ class RefreshEndpointJob < ActiveJob::Base
     screenshot_path
   end
 
+  def grab_page_screenshot_fake(url)
+    screenshot = new_focus_view_image_filename
+
+    uri = URI.parse(url)
+    raise GrabPageError, 'Non-HTTP URL' unless uri.kind_of?(URI::HTTP) and not uri.host.nil?
+
+    # generate a solid-color image with ImageMagick
+    `convert -size 100x100 xc:#990000 #{screenshot}`
+
+    screenshot
+  rescue URI::InvalidURIError
+    raise GrabPageError, 'Invalid URL'
+  end
+
   def grab_page_screenshot(url)
-    # Try webkit2png method first, otherwise use selenium
-    if webkit2png_available?
+    # 1) Use fake grab method, if environmental variable is specifier (very fast)
+    # 2) Then try webkit2png method, if available (in background, OSX-only)
+    # 3) Otherwise use Selenium (better test, annoying)
+    if ENV['UX_TEST_GRABBER']
+      grab_page_screenshot_fake url
+    elsif webkit2png_available?
       grab_page_screenshot_webkit2png url
     else
       grab_page_screenshot_selenium url
