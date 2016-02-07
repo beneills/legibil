@@ -89,8 +89,8 @@
 
   </table>
 
-  <% unless endpoint.focus_view.nil? or endpoint.focus_view.screenshot.nil? %>
-    <%= image_tag endpoint.focus_view.screenshot.url %>
+  <% unless endpoint.focus_view.nil? or endpoint.focus_view.focus_area.nil? %>
+    <%= image_tag endpoint.focus_view.focus_area.url %>
   <% else %>
     not yet refreshed
   <% end %>

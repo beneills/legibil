@@ -160,7 +160,7 @@ class RefreshEndpointJob < ActiveJob::Base
       # TODO does this successfully update?
       focus_view = endpoint.build_focus_view
 
-      focus_view.screenshot = f
+      focus_view.focus_area = f
       focus_view.save!
     end
   rescue MiniMagick::Error, MiniMagick::Invalid => e

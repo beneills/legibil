@@ -7,7 +7,6 @@ class RefreshEndpointJobTest < ActiveJob::TestCase
    test "bad endpoints raises error" do
     [
       "bad url",
-      "ftp://example.com",
       "",
       " "
     ].each do |url|
