@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ManuallyRefreshEndpointJobTest < ActiveJob::TestCase
+class RefreshEndpointJobTest < ActiveJob::TestCase
 
   # negative tests
 
@@ -13,7 +13,7 @@ class ManuallyRefreshEndpointJobTest < ActiveJob::TestCase
     ].each do |url|
       # Should fail, swallow the error, and print to log
       endpoint = Endpoint.new({ name: "bad endpoint", url: url, user: users(:chef) })
-      ManuallyRefreshEndpointJob.perform_now endpoint
+      RefreshEndpointJob.perform_now endpoint
     end
   end
 
@@ -22,7 +22,7 @@ class ManuallyRefreshEndpointJobTest < ActiveJob::TestCase
   test "endpoint last refresh time is updated" do
     assert_not refreshed_recently?(endpoints(:cook))
 
-    ManuallyRefreshEndpointJob.perform_now endpoints(:cook)
+    RefreshEndpointJob.perform_now endpoints(:cook)
 
     assert refreshed_recently?(endpoints(:cook))
   end

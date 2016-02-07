@@ -6,7 +6,7 @@ require 'tempfile'
 GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
 RenderFocusAreaError = Class.new(StandardError)
 
-class ManuallyRefreshEndpointJob < ActiveJob::Base
+class RefreshEndpointJob < ActiveJob::Base
   queue_as :urgent
 
   def perform(endpoint)

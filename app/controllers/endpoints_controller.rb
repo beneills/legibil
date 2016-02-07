@@ -47,7 +47,7 @@ class EndpointsController < ApplicationController
   # PATCH /endpoints/1/refresh.json
   def refresh
     respond_to do |format|
-      ManuallyRefreshEndpointJob.perform_later @endpoint
+      RefreshEndpointJob.perform_later @endpoint
 
       format.html { redirect_to root_url, notice: 'Endpoint refreshing.' }
       format.json { head :ok }
