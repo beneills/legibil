@@ -67,7 +67,7 @@ class RefreshEndpointJob < ActiveJob::Base
     # sensible parameters
     timeout = 15
     width   = 1000
-    height  = 6000
+    height  = 800
 
     # build command string
     # TODO escape URL properly
@@ -129,13 +129,29 @@ class RefreshEndpointJob < ActiveJob::Base
     Dir::Tmpname.make_tmpname([Rails.root.join('tmp/focus-view-').to_s, '.png'], nil)
   end
 
-  def render_blurry_background(screenshot)
-    background = new_focus_view_image_filename
+  def render_above_fold(screenshot)
+    above_fold = new_focus_view_image_filename
 
     image = MiniMagick::Image.open(screenshot)
+
+    if image.height > 1000
+      image.crop   "#{image.width}x1000+0x0!"
+      image.format 'png'
+      image.write  above_fold
+
+      above_fold
+    else
+      screenshot
+    end
+  end
+
+  def render_blurry_background(above_fold)
+    background = new_focus_view_image_filename
+
+    image = MiniMagick::Image.open(above_fold)
     image.combine_options do |b|
       b.colorspace 'Gray'
-      b.blur       '0x6'
+      b.blur       '0x4'
     end
     image.format 'png'
     image.write  background
@@ -143,13 +159,12 @@ class RefreshEndpointJob < ActiveJob::Base
     background
   end
 
-  def render_focus_centre(screenshot)
+  def render_focus_centre(above_fold)
     centre = new_focus_view_image_filename
 
-    image = MiniMagick::Image.open(screenshot)
+    image = MiniMagick::Image.open(above_fold)
     image.combine_options do |b|
-      b.gravity     'Center'
-      b.crop        '30x30%+0x0'
+      b.crop        '50x50%+0x0'
       b.bordercolor 'Red'
       b.border      '1x1'
     end
@@ -168,7 +183,6 @@ class RefreshEndpointJob < ActiveJob::Base
     background = MiniMagick::Image.new(background)
     centre     = MiniMagick::Image.new(centre)
     result = background.composite(centre) do |c|
-      c.gravity  'Center'
       c.geometry '+0+0'
     end
     result.format 'png'
@@ -177,9 +191,16 @@ class RefreshEndpointJob < ActiveJob::Base
     merged
   end
 
+  # Focus View: focus area rendering
+  #
+  # 1) Take the page screenshot
+  # 2) Consider all that is above the fold
+  # 3) The top-left quadrant is the "focus area"
+  # 4) Blur the rest, and draw a minimal border
   def save_focus_area(endpoint, screenshot)
-    background = render_blurry_background(screenshot)
-    centre     = render_focus_centre(screenshot)
+    above_fold = render_above_fold(screenshot)
+    background = render_blurry_background(above_fold)
+    centre     = render_focus_centre(above_fold)
     focus_area = merge_background_and_centre(background, centre)
 
     File.open(focus_area) do |f|
