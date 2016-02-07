@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207175644) do
+ActiveRecord::Schema.define(version: 20160207184219) do
 
   create_table "endpoints", force: :cascade do |t|
     t.text     "url",                                null: false
@@ -21,6 +21,10 @@ ActiveRecord::Schema.define(version: 20160207175644) do
     t.datetime "updated_at",                         null: false
     t.datetime "last_refreshed_at"
     t.datetime "last_refresh_request_at"
+    t.string   "screenshot_file_name"
+    t.string   "screenshot_content_type"
+    t.integer  "screenshot_file_size"
+    t.datetime "screenshot_updated_at"
   end
 
   create_table "focus_views", force: :cascade do |t|

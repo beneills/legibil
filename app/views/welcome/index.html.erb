@@ -54,6 +54,7 @@
         <th>Name</th>
         <th>User</th>
         <th>Refreshing?</th>
+        <th>Screenshot</th>
         <th>Last Refresh</th>
         <th colspan="3"></th>
       </tr>
@@ -65,6 +66,13 @@
         <td><%= endpoint.name %></td>
         <td><%= endpoint.user.email %></td>
         <td><%= endpoint.refreshing? %></td>
+        <td>
+          <% unless endpoint.screenshot.nil? %>
+            <%= link_to 'screenshot', endpoint.screenshot.url %>
+          <% else %>
+            not available
+          <% end %>
+        </td>
         <td>
           <% if endpoint.ever_successfully_refreshed? %>
             <%= endpoint.last_refreshed_at %>
