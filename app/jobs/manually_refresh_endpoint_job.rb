@@ -30,15 +30,22 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
   def grab_page_screenshot(url)
     screenshot = new_focus_view_image_filename
 
+    logger.debug "grab_page_screenshot from #{url} to #{screenshot}"
+
     driver = Selenium::WebDriver.for :firefox
+    logger.debug "grab_page_screenshot got driver"
     driver.get url
+    logger.debug "grab_page_screenshot got url"
     driver.save_screenshot(screenshot)
+    logger.debug "grab_page_screenshot saved screenshot"
 
     screenshot
   rescue Selenium::WebDriver::Error::WebDriverError => e
+    logger.debug "refreshing endpoint hit WebDriverError"
+
     raise GrabPageError, e.message
   ensure
-    driver.quit if defined? driver
+    driver.quit if defined?(driver) and not driver.nil?
   end
 
   def new_focus_view_image_filename
