@@ -5,7 +5,9 @@
 ux
 ==
 
-A web app for automated UX testing.
+__A web app for automated UX testing.__
+
+
 
 Dependencies
 ============
@@ -14,3 +16,8 @@ Dependencies
 * imagemagick
 * firefox
 * running X server
+
+Views
+=====
+
+* __Focus View:__ see the area(a) of user focus for an endpoint
