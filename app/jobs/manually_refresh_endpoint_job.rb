@@ -1,4 +1,6 @@
 require 'mini_magick'
+require 'mkmf'
+require 'open3'
 require 'tempfile'
 
 GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
@@ -27,7 +29,7 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
 
   private
 
-  def grab_page_screenshot(url)
+  def grab_page_screenshot_selenium(url)
     screenshot = new_focus_view_image_filename
 
     driver = Selenium::WebDriver.for :firefox
@@ -39,6 +41,54 @@ class ManuallyRefreshEndpointJob < ActiveJob::Base
     raise GrabPageError, e.message
   ensure
     driver.quit if defined? driver
+  end
+
+  def webkit2png_available?
+    `which webkit2png`
+    $?.success?
+  end
+
+  def grab_page_screenshot_webkit2png(url)
+    # generate file names, knowing that webkit2png appends '-full' to the supplied string
+    tmp_filename         = new_focus_view_image_filename
+    screenshot_dir       = File.dirname  tmp_filename
+    screenshot_file_base = File.basename tmp_filename, '.png'
+    screenshot_file      = "#{screenshot_file_base}-full.png"
+    screenshot_path      = File.join(screenshot_dir, screenshot_file)
+
+    # sensible parameters
+    timeout = 15
+    width   = 1000
+    height  = 6000
+
+    # build command string
+    # TODO escape URL properly
+    cmd = "webkit2png --timeout #{timeout} --fullsize --width #{width} --height #{height} --dir #{screenshot_dir} --filename #{screenshot_file_base} '#{url}'"
+
+    # run
+    logger.debug "running command: #{cmd}"
+    Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+      status = wait_thr.value
+      out    = stdout.read
+      err    = stderr.read
+      unless status.success? and err.empty?
+        error = "webkit2png failed with exit status: #{status}, stderr: #{std}, stdout: #{out}"
+
+        logger.error error
+        raise GrabPageError, error
+      end
+    end
+
+    screenshot_path
+  end
+
+  def grab_page_screenshot(url)
+    # Try webkit2png method first, otherwise use selenium
+    if webkit2png_available?
+      grab_page_screenshot_webkit2png url
+    else
+      grab_page_screenshot_selenium url
+    end
   end
 
   def new_focus_view_image_filename
