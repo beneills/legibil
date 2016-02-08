@@ -1,7 +1,9 @@
 require 'mini_magick'
 require 'mkmf'
 require 'open3'
+require 'socket'
 require 'tempfile'
+require 'timeout'
 
 GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
 RenderFocusAreaError = Class.new(StandardError)
@@ -42,10 +44,10 @@ class RefreshEndpointJob < ActiveJob::Base
     File.delete filename if File.file? filename
   end
 
-  def grab_page_screenshot_selenium(url)
+  def grab_page_screenshot_selenium(url, driver, driver_params={})
     screenshot = new_temporary_image_filename
 
-    driver = Selenium::WebDriver.for :firefox
+    driver = Selenium::WebDriver.for driver, driver_params
     driver.get url
     driver.save_screenshot(screenshot)
 
@@ -56,6 +58,27 @@ class RefreshEndpointJob < ActiveJob::Base
     raise GrabPageError, 'Timeout while grabbing page'
   ensure
     driver.quit if defined? driver
+  end
+
+  def grab_page_screenshot_selenium_firefox(url)
+    grab_page_screenshot_selenium url, :firefox
+  end
+
+  def phantomjs_running?
+    Timeout::timeout(1) do
+      begin
+        TCPSocket.new('127.0.0.1', 8001).close
+        true
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+        false
+      end
+    end
+  rescue Timeout::Error
+    false
+  end
+
+  def grab_page_screenshot_selenium_phantomjs(url)
+    grab_page_screenshot_selenium url, :remote, url: 'http://localhost:8001'
   end
 
   def webkit2png_available?
@@ -125,10 +148,12 @@ class RefreshEndpointJob < ActiveJob::Base
     # 3) Otherwise use Selenium (better test, annoying)
     if ENV['UX_TEST_GRABBER']
       grab_page_screenshot_fake url
+    elsif phantomjs_running?
+      grab_page_screenshot_selenium_phantomjs url
     elsif webkit2png_available?
       grab_page_screenshot_webkit2png url
     else
-      grab_page_screenshot_selenium url
+      grab_page_screenshot_selenium_firefox url
     end
   end
 
