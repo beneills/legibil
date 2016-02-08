@@ -31,12 +31,19 @@ class RefreshEndpointJob < ActiveJob::Base
     # update refresh time
     endpoint.last_refreshed_at = Time.now
     endpoint.save!
+  ensure
+    cleanup screenshot
   end
 
   private
 
+  def cleanup(filename)
+    logger.debug "Cleaning up #{filename}"
+    File.delete filename if File.file? filename
+  end
+
   def grab_page_screenshot_selenium(url)
-    screenshot = new_focus_view_image_filename
+    screenshot = new_temporary_image_filename
 
     driver = Selenium::WebDriver.for :firefox
     driver.get url
@@ -58,7 +65,7 @@ class RefreshEndpointJob < ActiveJob::Base
 
   def grab_page_screenshot_webkit2png(url)
     # generate file names, knowing that webkit2png appends '-full' to the supplied string
-    tmp_filename         = new_focus_view_image_filename
+    tmp_filename         = new_temporary_image_filename
     screenshot_dir       = File.dirname  tmp_filename
     screenshot_file_base = File.basename tmp_filename, '.png'
     screenshot_file      = "#{screenshot_file_base}-full.png"
@@ -99,7 +106,7 @@ class RefreshEndpointJob < ActiveJob::Base
   end
 
   def grab_page_screenshot_fake(url)
-    screenshot = new_focus_view_image_filename
+    screenshot = new_temporary_image_filename
 
     uri = URI.parse(url)
     raise GrabPageError, 'Non-HTTP URL' unless uri.kind_of?(URI::HTTP) and not uri.host.nil?
@@ -125,12 +132,12 @@ class RefreshEndpointJob < ActiveJob::Base
     end
   end
 
-  def new_focus_view_image_filename
-    Dir::Tmpname.make_tmpname([Rails.root.join('tmp/focus-view-').to_s, '.png'], nil)
+  def new_temporary_image_filename
+    Dir::Tmpname.make_tmpname([Rails.root.join('tmp/image-').to_s, '.png'], nil)
   end
 
   def render_above_fold(screenshot)
-    above_fold = new_focus_view_image_filename
+    above_fold = new_temporary_image_filename
 
     image = MiniMagick::Image.open(screenshot)
 
@@ -146,7 +153,7 @@ class RefreshEndpointJob < ActiveJob::Base
   end
 
   def render_blurry_background(above_fold)
-    background = new_focus_view_image_filename
+    background = new_temporary_image_filename
 
     image = MiniMagick::Image.open(above_fold)
     image.combine_options do |b|
@@ -160,7 +167,7 @@ class RefreshEndpointJob < ActiveJob::Base
   end
 
   def render_focus_centre(above_fold)
-    centre = new_focus_view_image_filename
+    centre = new_temporary_image_filename
 
     image = MiniMagick::Image.open(above_fold)
     image.combine_options do |b|
@@ -175,7 +182,7 @@ class RefreshEndpointJob < ActiveJob::Base
   end
 
   def merge_background_and_centre(background, centre)
-    merged = new_focus_view_image_filename
+    merged = new_temporary_image_filename
 
     logger.debug "background #{background}"
     logger.debug "centre #{centre}"
@@ -212,5 +219,10 @@ class RefreshEndpointJob < ActiveJob::Base
     end
   rescue MiniMagick::Error, MiniMagick::Invalid => e
     raise RenderFocusAreaError, e.message
+  ensure
+    cleanup above_fold
+    cleanup background
+    cleanup centre
+    cleanup focus_area
   end
 end
