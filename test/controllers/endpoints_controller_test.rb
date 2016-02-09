@@ -135,7 +135,7 @@ class EndpointsControllerTest < ActionController::TestCase
     assert_empty    @response.body
   end
 
-  test "should auto-refresh endpoint" do
+  test "should trigger auto-refresh upon job creation" do
     sign_in users(:butcher)
 
     # HTML
@@ -149,14 +149,13 @@ class EndpointsControllerTest < ActionController::TestCase
     assert refresh_requested_recently? Endpoint.last
   end
 
-  test "should refresh endpoint" do
+  test "should trigger refresh when asked" do
     sign_in users(:butcher)
 
     # HTML
-    post :create, endpoint: endpoint_data('refresh_html')
-
-    # Wait for auto-refresh
-    sleep 3
+    perform_enqueued_jobs do
+      post :create, endpoint: endpoint_data('refresh_html')
+    end
 
     patch :refresh, id: users(:butcher).endpoints.last
 
@@ -164,16 +163,37 @@ class EndpointsControllerTest < ActionController::TestCase
     assert               refresh_requested_recently? Endpoint.last
 
     # JSON
-    post :create, format: :json, endpoint: endpoint_data('refresh_json')
-
-    # Wait for auto-refresh
-    sleep 3
+    perform_enqueued_jobs do
+      post :create, format: :json, endpoint: endpoint_data('refresh_json')
+    end
 
     patch :refresh, format: :json, id: users(:butcher).endpoints.last
 
     assert_response :ok
     assert_empty    @response.body
     assert          refresh_requested_recently? Endpoint.last
+  end
+
+  test "should complete refresh job" do
+    sign_in users(:butcher)
+
+    # HTML
+    perform_enqueued_jobs do
+      post :create, endpoint: endpoint_data('refresh_html')
+
+      patch :refresh, id: users(:butcher).endpoints.last
+
+      assert               refreshed_recently? Endpoint.last
+    end
+
+    # JSON
+    perform_enqueued_jobs do
+      post :create, format: :json, endpoint: endpoint_data('refresh_json')
+
+      patch :refresh, format: :json, id: users(:butcher).endpoints.last
+
+      assert          refreshed_recently? Endpoint.last
+    end
   end
 
   private
