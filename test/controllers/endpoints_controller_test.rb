@@ -135,37 +135,45 @@ class EndpointsControllerTest < ActionController::TestCase
     assert_empty    @response.body
   end
 
+  test "should auto-refresh endpoint" do
+    sign_in users(:butcher)
+
+    # HTML
+    post :create, endpoint: endpoint_data('refresh_html')
+
+    assert refresh_requested_recently? Endpoint.last
+
+    # JSON
+    post :create, format: :json, endpoint: endpoint_data('refresh_json')
+
+    assert refresh_requested_recently? Endpoint.last
+  end
+
   test "should refresh endpoint" do
     sign_in users(:butcher)
 
     # HTML
     post :create, endpoint: endpoint_data('refresh_html')
 
-    # check refresh is auto-triggered
-    assert( refreshed_recently? Endpoint.last )
-
-    # wait a bit
-    sleep 2
+    # Wait for auto-refresh
+    sleep 3
 
     patch :refresh, id: users(:butcher).endpoints.last
 
     assert_redirected_to root_url
-    assert( refreshed_recently? Endpoint.last )
+    assert               refresh_requested_recently? Endpoint.last
 
     # JSON
     post :create, format: :json, endpoint: endpoint_data('refresh_json')
 
-    # check refresh is auto-triggered
-    assert( refreshed_recently? Endpoint.last )
-
-    # wait a bit
-    sleep 2
+    # Wait for auto-refresh
+    sleep 3
 
     patch :refresh, format: :json, id: users(:butcher).endpoints.last
 
     assert_response :ok
     assert_empty    @response.body
-    assert( refreshed_recently? Endpoint.last )
+    assert          refresh_requested_recently? Endpoint.last
   end
 
   private

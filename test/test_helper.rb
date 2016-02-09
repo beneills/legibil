@@ -11,6 +11,10 @@ class ActiveSupport::TestCase
 
   setup :ensure_rails_tmp_exists
 
+  def refresh_requested_recently?(endpoint)
+    endpoint.request_ever_requested? and (Time.now - endpoint.last_refresh_request_at).abs < 1
+  end
+
   def refreshed_recently?(endpoint)
     endpoint.ever_successfully_refreshed? and (Time.now - endpoint.last_refreshed_at).abs < 1
   end
@@ -25,4 +29,5 @@ end
 
 class ActionController::TestCase
   include Devise::TestHelpers
+  include ActiveJob::TestHelper
 end

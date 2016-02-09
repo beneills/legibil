@@ -32,12 +32,16 @@ class Endpoint < ActiveRecord::Base
     end
   end
 
+  def request_ever_requested?
+    not self.last_refresh_request_at.nil?
+  end
+
   def ever_successfully_refreshed?
     not self.last_refreshed_at.nil?
   end
 
   def refreshing?
-    not self.last_refresh_request_at.nil? and
+    request_ever_requested? and
       ( not ever_successfully_refreshed? or
           self.last_refreshed_at < self.last_refresh_request_at )
   end
