@@ -4,7 +4,10 @@ class Endpoint < ActiveRecord::Base
   belongs_to :user
   has_one    :focus_view
 
-  has_attached_file :screenshot, default_url: "/images/:style/missing.png"
+  has_attached_file :screenshot,
+    url: "/images/:hash-:filename",
+    default_url: "/images/:style/missing.png",
+    hash_secret: Rails.application.secrets.paperclip_hash_secret
   validates_with AttachmentContentTypeValidator, attributes: :screenshot, content_type: /\Aimage\/.*\Z/
   validates_with AttachmentSizeValidator,        attributes: :screenshot, less_than: 1.megabytes
 
