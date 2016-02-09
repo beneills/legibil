@@ -47,6 +47,9 @@ gem 'mini_magick'
 # For holding view images and other file data
 gem 'paperclip'
 
+# Test coverage
+gem 'coveralls', require: false
+
 group :production do
   # Use MySQL for production
   gem 'mysql2'
