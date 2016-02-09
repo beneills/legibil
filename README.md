@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/beneills/ux.svg?branch=master)](https://travis-ci.org/beneills/ux)
-[![Dependency Status](https://gemnasium.com/beneills/ux.svg)](https://gemnasium.com/beneills/ux)
 [![Code Climate](https://codeclimate.com/github/beneills/ux/badges/gpa.svg)](https://codeclimate.com/github/beneills/ux)
+[![Coverage Status](https://coveralls.io/repos/github/beneills/ux/badge.svg?branch=development)](https://coveralls.io/github/beneills/ux?branch=development)
+[![Dependency Status](https://gemnasium.com/beneills/ux.svg)](https://gemnasium.com/beneills/ux)
 
 ux
 ==
