@@ -40,8 +40,10 @@ class RefreshEndpointJob < ActiveJob::Base
   private
 
   def cleanup(filename)
-    logger.debug "Cleaning up #{filename}"
-    File.delete filename if File.file? filename
+    unless filename.nil?
+      logger.debug "Cleaning up #{filename}"
+      File.delete filename if File.file? filename
+    end
   end
 
   def grab_page_screenshot_selenium(url, driver, driver_params={})
