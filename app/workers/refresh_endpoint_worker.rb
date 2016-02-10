@@ -39,10 +39,10 @@ class RefreshEndpointWorker
     # render focus area and attach to endpoin                                                       t
     save_focus_area(endpoint, screenshot)
   rescue GrabPageError => e
-    logger.error "error while grabbing screenshot: #{e.message}"
+    logger.info "error while grabbing screenshot: #{e.message}"
     fail endpoint
   rescue RenderFocusAreaError => e
-    logger.error "error while rendering focus area: #{e.message}"
+    logger.info "error while rendering focus area: #{e.message}"
     fail endpoint
   else
     # update refresh time
