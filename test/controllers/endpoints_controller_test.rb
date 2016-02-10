@@ -1,11 +1,6 @@
-require 'sidekiq/testing'
 require 'test_helper'
 
 class EndpointsControllerTest < ActionController::TestCase
-  setup do
-    @cook = endpoints(:cook)
-    @bake = endpoints(:bake)
-  end
 
   # negative tests
 
@@ -135,70 +130,4 @@ class EndpointsControllerTest < ActionController::TestCase
     assert_response :no_content
     assert_empty    @response.body
   end
-
-  test "should trigger auto-refresh upon job creation" do
-    sign_in users(:butcher)
-
-    # HTML
-    post :create, endpoint: endpoint_data('refresh_html')
-
-    assert refresh_requested_recently? Endpoint.last
-
-    # JSON
-    post :create, format: :json, endpoint: endpoint_data('refresh_json')
-
-    assert refresh_requested_recently? Endpoint.last
-  end
-
-  test "should trigger refresh when asked" do
-    sign_in users(:butcher)
-
-    # HTML
-    Sidekiq::Testing.inline! do
-      post :create, endpoint: endpoint_data('refresh_html')
-    end
-
-    patch :refresh, id: users(:butcher).endpoints.last
-
-    assert_redirected_to root_url
-    assert               refresh_requested_recently? Endpoint.last
-
-    # JSON
-    Sidekiq::Testing.inline! do
-      post :create, format: :json, endpoint: endpoint_data('refresh_json')
-    end
-
-    patch :refresh, format: :json, id: users(:butcher).endpoints.last
-
-    assert_response :ok
-    assert_empty    @response.body
-    assert          refresh_requested_recently? Endpoint.last
-  end
-
-  test "should complete refresh job" do
-    sign_in users(:butcher)
-
-    # HTML
-    Sidekiq::Testing.inline! do
-      post :create, endpoint: endpoint_data('refresh_html')
-
-      patch :refresh, id: users(:butcher).endpoints.last
-
-      assert               refreshed_recently? Endpoint.last
-    end
-
-    # JSON
-    Sidekiq::Testing.inline! do
-      post :create, format: :json, endpoint: endpoint_data('refresh_json')
-
-      patch :refresh, format: :json, id: users(:butcher).endpoints.last
-
-      assert          refreshed_recently? Endpoint.last
-    end
-  end
-
-  private
-    def endpoint_data(identifier = '')
-      { name: "my endpoint#{identifier}", url: "http://example.com/endpoint#{identifier}" }
-    end
 end
