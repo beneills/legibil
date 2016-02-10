@@ -27,7 +27,10 @@ class RefreshEndpointWorker
     # grab page screenshot
     screenshot = grab_page_screenshot(endpoint.url_with_protocol)
 
-    # save screenshot to endpoint
+    # delete current screenshot
+    endpoint.screenshot.destroy
+
+    # save new screenshot to endpoint
     File.open(screenshot) do |f|
       endpoint.screenshot = f
       endpoint.save!
@@ -37,8 +40,10 @@ class RefreshEndpointWorker
     save_focus_area(endpoint, screenshot)
   rescue GrabPageError => e
     logger.error "error while grabbing screenshot: #{e.message}"
+    fail endpoint
   rescue RenderFocusAreaError => e
     logger.error "error while rendering focus area: #{e.message}"
+    fail endpoint
   else
     # update refresh time
     endpoint.last_refreshed_at = Time.now
@@ -49,6 +54,14 @@ class RefreshEndpointWorker
 
   private
 
+  # Fail the refresh.
+  def fail(endpoint)
+    unless endpoint.nil?
+      endpoint.last_refresh_failure_at = Time.now
+      endpoint.save!
+    end
+  end
+
   def cleanup(filename)
     unless filename.nil?
       logger.debug "Cleaning up #{filename}"
@@ -56,11 +69,16 @@ class RefreshEndpointWorker
     end
   end
 
+  def bad_endpoint_selenium?(driver)
+    'about:blank' == driver.current_url
+  end
+
   def grab_page_screenshot_selenium(url, driver, driver_params={})
     screenshot = new_temporary_image_filename
 
     driver = Selenium::WebDriver.for driver, driver_params
     driver.get url
+    raise GrabPageError, 'Could not fetch URL' if bad_endpoint_selenium? driver
     driver.save_screenshot(screenshot)
 
     screenshot
@@ -69,7 +87,7 @@ class RefreshEndpointWorker
   rescue Net::ReadTimeout
     raise GrabPageError, 'Timeout while grabbing page'
   ensure
-    driver.quit if defined? driver
+    driver.quit if driver.kind_of? Selenium::WebDriver::Driver
   end
 
   def grab_page_screenshot_selenium_firefox(url)
@@ -247,10 +265,13 @@ class RefreshEndpointWorker
     centre     = render_focus_centre(above_fold)
     focus_area = merge_background_and_centre(background, centre)
 
-    File.open(focus_area) do |f|
-      # TODO does this successfully update?
-      focus_view = endpoint.build_focus_view
+    # TODO does this successfully update?
+    focus_view = endpoint.focus_view || endpoint.build_focus_view
 
+    # delete current focus area
+    focus_view.focus_area.destroy
+
+    File.open(focus_area) do |f|
       focus_view.focus_area = f
       focus_view.save!
     end

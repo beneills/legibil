@@ -40,10 +40,36 @@ class Endpoint < ActiveRecord::Base
     not self.last_refreshed_at.nil?
   end
 
+  def refresh_ever_failed?
+    not self.last_refresh_failure_at.nil?
+  end
+
+  def refresh_ever_completed?
+    ever_successfully_refreshed? or refresh_ever_failed?
+  end
+
+  def refresh_status
+    if refresh_failed?
+      'failed'
+    elsif refreshing?
+      'refreshing'
+    else
+      'idle'
+    end
+  end
+
   def refreshing?
     request_ever_requested? and
-      ( not ever_successfully_refreshed? or
-          self.last_refreshed_at < self.last_refresh_request_at )
+      ( not refresh_ever_completed? or
+          ( not ever_successfully_refreshed? or self.last_refreshed_at       < self.last_refresh_request_at ) and
+          ( not refresh_ever_failed?         or self.last_refresh_failure_at < self.last_refresh_request_at ) )
+  end
+
+  # Did the last completed refresh fail?
+  def refresh_failed?
+    request_ever_requested? and
+      refresh_ever_failed? and
+      self.last_refresh_request_at < self.last_refresh_failure_at
   end
 
   # assume http protocol if no protocol identifier is present
