@@ -5,6 +5,9 @@ cache: bundler
 rvm:
   - 2.2.1
 
+services:
+  - redis-server
+
 # start X frame buffer for Selenium tests
 before_script:
   - "export DISPLAY=:99.0"

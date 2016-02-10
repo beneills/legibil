@@ -8,10 +8,20 @@ require 'timeout'
 GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
 RenderFocusAreaError = Class.new(StandardError)
 
-class RefreshEndpointJob < ActiveJob::Base
-  queue_as :urgent
+class RefreshEndpointWorker
+  include Sidekiq::Worker
 
-  def perform(endpoint)
+  def perform(submission_hash)
+
+    # deserialize sidekiq argument
+    submission = RefreshSubmission.from_h submission_hash
+
+    # guarantee idempotence
+    return unless submission.valid?
+
+    # save typing...
+    endpoint = submission.endpoint
+
     logger.debug "refreshing endpoint #{endpoint.url} by user #{endpoint.user.email}"
 
     # grab page screenshot
@@ -23,7 +33,7 @@ class RefreshEndpointJob < ActiveJob::Base
       endpoint.save!
     end
 
-    # render focus area and attach to endpoint
+    # render focus area and attach to endpoin                                                       t
     save_focus_area(endpoint, screenshot)
   rescue GrabPageError => e
     logger.error "error while grabbing screenshot: #{e.message}"

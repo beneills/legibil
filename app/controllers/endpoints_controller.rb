@@ -13,7 +13,7 @@ class EndpointsController < ApplicationController
       @endpoint.last_refresh_request_at = Time.now
 
       if @endpoint.save
-        RefreshEndpointJob.perform_later @endpoint
+        RefreshEndpointWorker.perform_async RefreshSubmission.new(@endpoint.id)
 
         format.html { redirect_to root_url, notice: 'Endpoint was successfully created.' }
         format.json { head :created }
@@ -55,7 +55,7 @@ class EndpointsController < ApplicationController
       @endpoint.last_refresh_request_at = Time.now
 
       if @endpoint.save
-        RefreshEndpointJob.perform_later @endpoint
+        RefreshEndpointWorker.perform_async RefreshSubmission.new(@endpoint.id)
 
         format.html { redirect_to root_url, notice: 'Endpoint refreshing.' }
         format.json { head :ok }
@@ -63,15 +63,13 @@ class EndpointsController < ApplicationController
         format.html { head :unprocessable_entity }
         format.json { render json: @endpoint.errors, status: :unprocessable_entity }
       end
-
-      RefreshEndpointJob.perform_later @endpoint
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_endpoint
-      @endpoint = Endpoint.find(params[:id])
+      @endpoint    = Endpoint.find params[:id]
     end
 
     def check_endpoint_ownership

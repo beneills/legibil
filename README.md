@@ -15,8 +15,11 @@ Dependencies
 
 * ruby-rails
 * imagemagick
-* firefox
-* running X server
+* a running redis server (for sidekiq)
+* one of (in order of preference):
+** phantomjs, or
+** firefox with running X server, or
+** webkit2png
 
 Views
 =====

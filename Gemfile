@@ -50,6 +50,12 @@ gem 'paperclip'
 # Test coverage
 gem 'coveralls', require: false
 
+# Asynchronous jobs, e.g. for refreshing endpoints
+gem 'sidekiq'
+
+# For Sidekiq Monitoring UI
+gem 'sinatra'
+
 group :production do
   # Use MySQL for production
   gem 'mysql2'

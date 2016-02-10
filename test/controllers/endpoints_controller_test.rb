@@ -1,3 +1,4 @@
+require 'sidekiq/testing'
 require 'test_helper'
 
 class EndpointsControllerTest < ActionController::TestCase
@@ -153,7 +154,7 @@ class EndpointsControllerTest < ActionController::TestCase
     sign_in users(:butcher)
 
     # HTML
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       post :create, endpoint: endpoint_data('refresh_html')
     end
 
@@ -163,7 +164,7 @@ class EndpointsControllerTest < ActionController::TestCase
     assert               refresh_requested_recently? Endpoint.last
 
     # JSON
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       post :create, format: :json, endpoint: endpoint_data('refresh_json')
     end
 
@@ -178,7 +179,7 @@ class EndpointsControllerTest < ActionController::TestCase
     sign_in users(:butcher)
 
     # HTML
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       post :create, endpoint: endpoint_data('refresh_html')
 
       patch :refresh, id: users(:butcher).endpoints.last
@@ -187,7 +188,7 @@ class EndpointsControllerTest < ActionController::TestCase
     end
 
     # JSON
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       post :create, format: :json, endpoint: endpoint_data('refresh_json')
 
       patch :refresh, format: :json, id: users(:butcher).endpoints.last

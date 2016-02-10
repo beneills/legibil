@@ -1,18 +1,24 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+
+  # workers admin
+  mount Sidekiq::Web => '/sidekiq'
+
+  # add auth routes for users
   devise_for :users
-  get 'welcome/index'
 
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
-
-  # You can have the root of your site routed with "root"
-  root 'welcome#index'
-
+  # endpoint endpoints
   resources :endpoints, :only => [:create, :update, :destroy] do
     member do
       patch 'refresh'
     end
   end
+
+  # home page
+  get 'welcome/index'
+  root 'welcome#index'
+
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
