@@ -77,6 +77,11 @@ class Endpoint < ActiveRecord::Base
     possibly_add_protocol self.url
   end
 
+  # Used to uniquely reference DOM elements associated with this endpoint in CSS
+  def css_class
+    "endpoint-#{id}"
+  end
+
   private
     def possibly_add_protocol(resource)
       if resource.include?(':')
