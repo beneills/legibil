@@ -5,46 +5,53 @@
     </div>
   <% end %>
 
-  <div class="endpoint-new-selector">
-    +
+  <div id="endpoint-new-selector">
+    <span class="endpoint-name">+</span>
   </div>
+  <div class="clear"></div>
 </div>
 
 <% @endpoints.each_with_index do |endpoint, index| %>
   <div class="endpoint-info one-of-many <%= endpoint.css_class %> <%= "selected-default" if index.zero? %>">
-    Name: <span class="endpoint-name"><%= endpoint.name %></span>
-    URL: <span class="endpoint-url"><%= endpoint.url %></span>
-    Status: <span class="endpoint-status"><%= endpoint.refresh_status %></span>
+    <span class="endpoint-using">
+      Using live web endpoint
+      <span class="endpoint-url"><%= endpoint.url %></span>
+      <span class="endpoint-url-change">change?</span>
+    </span>
 
     <span class="endpoint-last-refresh">
-      <% if endpoint.ever_successfully_refreshed? %>
-        Last refreshed at <%= endpoint.last_refreshed_at %>
-      <% else %>
-        not yet refreshed
+      <% case endpoint.refresh_status %>
+      <% when :failed %>
+        <span class="endpoint-last-refresh-failed">Last refresh failed.</span>
+      <% when :refreshing %>
+        <span class="endpoint-last-refresh-refreshing">Refreshing...</span>
+      <% when :idle %>
+        <span class="endpoint-last-refresh-idle">Last refreshed <%= last_refreshed_ago endpoint %> ago.</span>
+      <% when :never %>
+        <span class="endpoint-last-refresh-never">Never refreshed.</span>
       <% end %>
     </span>
 
     <span class="endpoint-screenshot">
       <% unless endpoint.screenshot.nil? %>
-        <%= link_to 'screenshot', endpoint.screenshot.url %>
+        <%= link_to 'see page content at last refresh', endpoint.screenshot.url %>
       <% else %>
         not available
       <% end %>
     </span>
 
-    <span class="endpoint-refresh"><%= link_to 'Refresh', refresh_endpoint_path(endpoint), method: :patch %></span>
-    <span class="endpoint-destroy"><%= link_to 'Destroy', endpoint, method: :delete, data: { confirm: 'Are you sure?' } %></span>
+    <span class="endpoint-name-change"><a>[rename]</a></span>
+    <span class="endpoint-refresh"><%= link_to '[refresh]', refresh_endpoint_path(endpoint), method: :patch %></span>
+    <span class="endpoint-destroy"><%= link_to '[destroy]', endpoint, method: :delete, data: { confirm: 'Are you sure?' } %></span>
 
-          <%= form_for(endpoint) do |f| %>
-            <td>
+    <div class="endpoint-name-change-form">
+           <%= form_for(endpoint) do |f| %>
               <%= f.label :name %>
               <%= f.text_field :name %>
-            </td>
-            <td>
               <%= f.submit %>
-            </td>
+              <span class="endpoint-name-change-cancel"><a>[cancel]</a></span>
           <% end %>
-
+    </div>
   </div>
 <% end %>
 
@@ -80,15 +87,25 @@
 <% @endpoints.each_with_index do |endpoint, index| %>
   <div class="views one-of-many <%= endpoint.css_class %> <%= "selected-default" if index.zero? %>">
     <div class="view view-focus">
-      <% unless endpoint.focus_view.nil? or endpoint.focus_view.focus_area.nil? %>
-        <%= image_tag endpoint.focus_view.focus_area.url %>
-      <% else %>
-        not yet refreshed
-      <% end %>
+      <span class="view-title">Focus</span>
+      <span class="view-subtitle">see where users look</span>
+      <span class="view-description">blah</span>
+      <div class="view-content">
+        <% unless endpoint.focus_view.nil? or endpoint.focus_view.focus_area.nil? %>
+          <%= image_tag endpoint.focus_view.focus_area.url %>
+        <% else %>
+          not yet refreshed
+        <% end %>
+      </div>
     </div>
 
     <div class="view view-colour">
-      not yest implemented
+      <span class="view-title">Color</span>
+      <span class="view-subtitle">see color palette of your page</span>
+      <span class="view-description">blah</span>
+      <div class="view-content">
+        not yet implemented
+      </div>
     </div>
 
   </div>

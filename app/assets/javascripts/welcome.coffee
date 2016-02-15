@@ -30,9 +30,19 @@ jQuery ->
 
       $(".one-of-many").fadeOut("fast")
       $(endpoints_to_show_css).fadeIn("fast")
-  $(".endpoint-new-selector").on 'click', ->
+  $("#endpoint-new-selector").on 'click', ->
       $(".one-of-many").fadeOut("fast")
       $("#endpoint-new").fadeIn("fast")
+
+  # Show/hide endpoint name change form
+  $(".endpoint-name-change").on 'click', ->
+    if $(".endpoint-name-change-form").css("display") != "none"
+      $(".endpoint-name-change-form").fadeOut("fast")
+    else
+      $(".endpoint-name-change-form").fadeIn("fast")
+  $(".endpoint-name-change-cancel").on 'click', ->
+    $(".endpoint-name-change-form").fadeOut("fast")
+
 
 # Upon DOM ready
 $ ->

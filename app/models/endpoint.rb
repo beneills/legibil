@@ -50,11 +50,13 @@ class Endpoint < ActiveRecord::Base
 
   def refresh_status
     if refresh_failed?
-      'failed'
+      :failed
     elsif refreshing?
-      'refreshing'
+      :refreshing
+    elsif ever_successfully_refreshed?
+      :idle
     else
-      'idle'
+      :never
     end
   end
 

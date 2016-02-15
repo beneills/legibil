@@ -27,42 +27,44 @@
 </head>
 <body>
 
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
+<%= notice %>
+<%= alert %>
 
 <div id="header">
   <img id="logo">
   <div id="right">
-    <ul id="links">
+    <ul id="header-links">
       <li><a href="#">Endpoints</a></li>
       <li><a href="#">Help</a></li>
       <li><a href="#">Contact</a></li>
       <li><a href="#">Account</a></li>
     </ul>
 
-    <% unless user_signed_in? %>
-      <div id="not-logged-in">
-        <span id="welcome">Welcome, Guest!</span>
-
-        <%= form_for(:user, :url => session_path(:user)) do |f| %>
-          <%= f.text_field :email %>
-          <%= f.password_field :password %>
-          <%= f.check_box :remember_me %>
-          <%= f.label :remember_me %>
-          <%= f.submit 'Sign in' %>
-          <%= link_to "Forgot your password?", new_password_path(:user) %>
-        <% end %>
-      </div>
-
-    <% else %>
-      <div id="login-status">
-        <div id="logged-in">
-          <span id="welcome">Welcome, <%= current_user.email %>!</span>
-          <span id="logout"><%= link_to('Logout', destroy_user_session_path, :method => :delete) %></span>
-          <img id="user-avatar">
+    <div id="login-status">
+      <% unless user_signed_in? %>
+        <div id="not-logged-in">
+          <%= form_for(:user, :url => session_path(:user)) do |f| %>
+            <%= f.text_field :email %>
+            <%= f.password_field :password %>
+            <%= f.submit 'Sign in' %>
+            <span id="remember-forgot">
+              <%= f.check_box :remember_me %>
+              <span id="remember-me">remember?</span>
+              |
+              <%= link_to "forgot", new_password_path(:user) %>
+            </span>
+          <% end %>
         </div>
 
-    <% end %>
+      <% else %>
+          <div id="logged-in">
+            <div id="logged-in-text">
+              <span id="welcome">Welcome, <%= current_user.email %>!</span>
+              <span id="logout"><%= link_to('Sign out?', destroy_user_session_path, :method => :delete) %></span>
+            </div>
+            <img id="user-avatar">
+          </div>
+      <% end %>
   </div>
 </div>
 
@@ -71,7 +73,7 @@
 </div>
 
 <div id="footer">
-  <ul id="links">
+  <ul id="footer-links">
       <li><a href="#">Help</a></li>
       <li><a href="#">Contact</a></li>
       <li><a href="#">Legal</a></li>
@@ -81,6 +83,8 @@
     <span id="made-by">Made by <a href="http://beneills.com">Ben Eills</a> on <a href="https://github.com/beneills/ux">Github</a>.</span>
     <img id="creator-avatar">
   </div>
+
+  <div class="clear"></div>
 </div>
 
 <script src="<%= remote_resource 'https://code.jquery.com/jquery-1.12.0.min.js' %>"></script>
