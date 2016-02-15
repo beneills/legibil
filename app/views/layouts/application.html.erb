@@ -9,15 +9,15 @@
   <title>UX</title>
 
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <link rel="stylesheet" href="<%= remote_resource 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' %>" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="<%= remote_resource 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css' %>" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<%= remote_resource 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' %>">
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,400italic,600,700,900" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700" rel="stylesheet" type="text/css">
+  <link href="<%= remote_resource 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,400italic,600,700,900' %>" rel="stylesheet" type="text/css">
+  <link href="<%= remote_resource 'https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700' %>" rel="stylesheet" type="text/css">
 
   <!-- Site styling and javascripts, overriding the above vendor packages -->
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
@@ -27,17 +27,70 @@
 </head>
 <body>
 
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
+<%= notice %>
+<%= alert %>
 
-<%= yield %>
+<div id="header">
+  <img id="logo">
+  <div id="right">
+    <ul id="header-links">
+      <li><a href="#">Endpoints</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">Account</a></li>
+    </ul>
 
+    <div id="login-status">
+      <% unless user_signed_in? %>
+        <div id="not-logged-in">
+          <%= form_for(:user, :url => session_path(:user)) do |f| %>
+            <%= f.text_field :email %>
+            <%= f.password_field :password %>
+            <%= f.submit 'Sign in' %>
+            <span id="remember-forgot">
+              <%= f.check_box :remember_me %>
+              <span id="remember-me">remember?</span>
+              |
+              <%= link_to "forgot", new_password_path(:user) %>
+            </span>
+          <% end %>
+        </div>
 
-<!-- JQuery -->
-<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+      <% else %>
+          <div id="logged-in">
+            <div id="logged-in-text">
+              <span id="welcome">Welcome, <%= current_user.email %>!</span>
+              <span id="logout"><%= link_to('Sign out?', destroy_user_session_path, :method => :delete) %></span>
+            </div>
+            <img id="user-avatar">
+          </div>
+      <% end %>
+  </div>
+</div>
+
+<div id="content">
+  <%= yield %>
+</div>
+
+<div id="footer">
+  <ul id="footer-links">
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">Legal</a></li>
+  </ul>
+
+  <div id="right">
+    <span id="made-by">Made by <a href="http://beneills.com">Ben Eills</a> on <a href="https://github.com/beneills/ux">Github</a>.</span>
+    <img id="creator-avatar">
+  </div>
+
+  <div class="clear"></div>
+</div>
+
+<script src="<%= remote_resource 'https://code.jquery.com/jquery-1.12.0.min.js' %>"></script>
 
 <!-- Bootstrap -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="<%= remote_resource 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js' %>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 </body>
 </html>

@@ -1,8 +1,21 @@
-
 body {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: rgba(0,0,0,0.75);
   line-height: 24px;
+}
+
+// By default, hide all hot-switchable elements
+// One or more of these should be revealed by Javascript
+.one-of-many {
+  display: none;
+}
+
+.clear {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }

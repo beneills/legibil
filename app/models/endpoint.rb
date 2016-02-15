@@ -50,11 +50,13 @@ class Endpoint < ActiveRecord::Base
 
   def refresh_status
     if refresh_failed?
-      'failed'
+      :failed
     elsif refreshing?
-      'refreshing'
+      :refreshing
+    elsif ever_successfully_refreshed?
+      :idle
     else
-      'idle'
+      :never
     end
   end
 
@@ -75,6 +77,11 @@ class Endpoint < ActiveRecord::Base
   # assume http protocol if no protocol identifier is present
   def url_with_protocol
     possibly_add_protocol self.url
+  end
+
+  # Used to uniquely reference DOM elements associated with this endpoint in CSS
+  def css_class
+    "endpoint-#{id}"
   end
 
   private

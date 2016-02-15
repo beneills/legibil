@@ -1,3 +1,40 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+//
+// Endpoint selectors
+//
+
+.endpoints {
+}
+
+.endpoint-selector {
+  height: 40px;
+  min-width: 80px;
+  background-color: #DDDDDD;
+  float: left;
+  margin-right: 10px;
+}
+
+
+#endpoint-new-selector {
+  @extend .endpoint-selector;
+}
+
+.endpoint-selector .endpoint-name {
+  align: center;
+}
+
+.endpoint-name-change-form {
+  display: none;
+}
+
+.view {
+  margin-top: 30px;
+
+  .view-title {
+    font-size: 2em;
+  }
+}
+
