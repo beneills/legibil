@@ -1,0 +1,34 @@
+#!/bin/sh
+
+#
+# This script starts a development environment, including Redis, Sidekiq, and Rails
+#
+
+# 1) Check we're in the root rails directory
+if ! [ -f .screen_development ]; then echo "error: not in root rails directory" >> /dev/stderr; exit 1; fi
+
+
+# 2) Check dependencies are up-to-date
+bundle check
+dependencies_up_to_date=$?
+
+if ! [ 0 -eq $dependencies_up_to_date ]; then echo "error: dependencies not up-to-date: run bundle install" >> /dev/stderr; exit 1; fi
+
+
+# 3) Check screen is available
+type screen
+screen_available=$?
+
+if ! [ 0 -eq $screen_available ]; then echo "error: screen not available" >> /dev/stderr; exit 1; fi
+
+
+# 4) Check redis is available
+type redis-server
+redis_available=$?
+
+if ! [ 0 -eq $redis_available ]; then echo "error: redis not available" >> /dev/stderr; exit 1; fi
+
+
+# 5) Launch screen session
+echo "Launching components in detached screen session.  Try screen -r ux_development to access it."
+screen -c .screen_development -d -m -S ux_development

@@ -3,15 +3,14 @@
 [![Coverage Status](https://coveralls.io/repos/github/beneills/ux/badge.svg?branch=development)](https://coveralls.io/github/beneills/ux?branch=development)
 [![Dependency Status](https://gemnasium.com/beneills/ux.svg)](https://gemnasium.com/beneills/ux)
 
-ux
-==
+# ux #
 
 __A web app for automated UX testing.__
 
 
 
-Dependencies
-============
+## Dependencies ##
+
 
 * ruby-rails
 * imagemagick
@@ -21,7 +20,10 @@ Dependencies
 ** firefox with running X server, or
 ** webkit2png
 
-Views
-=====
+## Development ##
+
+Run `bin/development-environment` from the root ux directory to launch a development environment.
+
+## Views ##
 
 * __Focus View:__ see the area(a) of user focus for an endpoint
