@@ -176,7 +176,7 @@ class RefreshEndpointWorker
     # 1) Use fake grab method, if environmental variable is specifier (very fast)
     # 2) Then try webkit2png method, if available (in background, OSX-only)
     # 3) Otherwise use Selenium (better test, annoying)
-    if ENV['UX_TEST_GRABBER']
+    if ENV['LEGIBIL_TEST_GRABBER']
       grab_page_screenshot_fake url
     elsif phantomjs_running?
       grab_page_screenshot_selenium_phantomjs url

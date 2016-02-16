@@ -30,5 +30,5 @@ if ! [ 0 -eq $redis_available ]; then echo "error: redis not available" >> /dev/
 
 
 # 5) Launch screen session
-echo "Launching components in detached screen session.  Try screen -r ux_development to access it."
-screen -c .screen_development -d -m -S ux_development
+echo "Launching components in detached screen session.  Try screen -r legibil_development to access it."
+screen -c .screen_development -d -m -S legibil_development

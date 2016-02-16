@@ -24,7 +24,7 @@ production:
   adapter: mysql2
   encoding: utf8
   host: localhost
-  database: ux
+  database: legibil
   pool: 5
-  username: ux
+  username: legibil
   password:

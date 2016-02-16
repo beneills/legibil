@@ -1,12 +1,11 @@
-[![Build Status](https://travis-ci.org/beneills/ux.svg?branch=master)](https://travis-ci.org/beneills/ux)
-[![Code Climate](https://codeclimate.com/github/beneills/ux/badges/gpa.svg)](https://codeclimate.com/github/beneills/ux)
-[![Coverage Status](https://coveralls.io/repos/github/beneills/ux/badge.svg?branch=development)](https://coveralls.io/github/beneills/ux?branch=development)
-[![Dependency Status](https://gemnasium.com/beneills/ux.svg)](https://gemnasium.com/beneills/ux)
+[![Build Status](https://travis-ci.org/beneills/legibil.svg?branch=master)](https://travis-ci.org/beneills/legibil)
+[![Code Climate](https://codeclimate.com/github/beneills/legibil/badges/gpa.svg)](https://codeclimate.com/github/beneills/legibil)
+[![Coverage Status](https://coveralls.io/repos/github/beneills/legibil/badge.svg?branch=master)](https://coveralls.io/github/beneills/legibil?branch=master)
+[![Dependency Status](https://gemnasium.com/beneills/legibil.svg)](https://gemnasium.com/beneills/legibil)
 
-# ux #
+# Legibil #
 
 __A web app for automated UX testing.__
-
 
 
 ## Dependencies ##
@@ -20,9 +19,11 @@ __A web app for automated UX testing.__
 ** firefox with running X server, or
 ** webkit2png
 
+
 ## Development ##
 
-Run `bin/development-environment` from the root ux directory to launch a development environment.
+Run `bin/development-environment` from the root legibil directory to launch a development environment.
+
 
 ## Views ##
 
