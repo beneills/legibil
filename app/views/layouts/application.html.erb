@@ -34,13 +34,15 @@
 <%= alert %>
 
 <div id="header">
-  <img id="logo">
+  <a href="/">
+    <img id="logo">
+  </a>
   <div id="right">
     <ul id="header-links">
-      <li><a href="#">Endpoints</a></li>
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">Account</a></li>
+      <li><a href="/">Endpoints</a></li>
+      <li><a href="/help">Help</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/profile">Profile</a></li>
     </ul>
 
     <div id="login-status">
@@ -65,7 +67,9 @@
               <span id="welcome">Welcome, <%= current_user.email %>!</span>
               <span id="logout"><%= link_to('Sign out?', destroy_user_session_path, :method => :delete) %></span>
             </div>
-            <img id="user-avatar">
+              <a href="/profile">
+                <img id="user-avatar">
+              </a>
           </div>
       <% end %>
   </div>
@@ -77,9 +81,9 @@
 
 <div id="footer">
   <ul id="footer-links">
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">Legal</a></li>
+      <li><a href="/help">Help</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/legal">Legal</a></li>
   </ul>
 
   <div id="right">

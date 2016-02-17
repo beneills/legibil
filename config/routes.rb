@@ -15,8 +15,12 @@ Rails.application.routes.draw do
     end
   end
 
-  # home page
-  get 'welcome/index'
+
+  get 'contact', :to => 'welcome#contact'
+  get 'help',    :to => 'welcome#help'
+  get 'legal',   :to => 'welcome#legal'
+  get 'profile', :to => 'welcome#profile'
+
   root 'welcome#index'
 
 
