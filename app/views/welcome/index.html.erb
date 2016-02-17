@@ -104,7 +104,11 @@
       <span class="view-subtitle">see color palette of your page</span>
       <span class="view-description">blah</span>
       <div class="view-content">
-        not yet implemented
+        <% unless endpoint.colour_view.nil? or endpoint.colour_view.palette.nil? %>
+          <%= image_tag endpoint.colour_view.palette.url %>
+        <% else %>
+          not yet refreshed
+        <% end %>
       </div>
     </div>
 

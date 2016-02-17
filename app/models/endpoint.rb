@@ -3,6 +3,7 @@ require 'uri'
 class Endpoint < ActiveRecord::Base
   belongs_to :user
   has_one    :focus_view
+  has_one    :colour_view
 
   has_attached_file :screenshot,
     url: "/images/:hash-:filename",
