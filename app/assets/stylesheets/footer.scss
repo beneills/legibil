@@ -1,5 +1,15 @@
 #footer {
   margin-top: 30px;
+
+  // Allow #right to be anchored to bottom
+  position: relative;
+}
+
+#footer #right {
+  // Anchor to bottom-right within #footer
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 
 #footer-links {
@@ -11,5 +21,9 @@
 }
 
 #footer > #right {
+  float: right;
+}
+
+#follow-buttons {
   float: right;
 }

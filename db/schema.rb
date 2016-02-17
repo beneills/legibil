@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210151529) do
+ActiveRecord::Schema.define(version: 20160217102302) do
+
+  create_table "colour_views", force: :cascade do |t|
+    t.integer  "endpoint_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "palette_file_name"
+    t.string   "palette_content_type"
+    t.integer  "palette_file_size"
+    t.datetime "palette_updated_at"
+  end
+
+  add_index "colour_views", ["endpoint_id"], name: "index_colour_views_on_endpoint_id"
 
   create_table "endpoints", force: :cascade do |t|
     t.text     "url",                                null: false

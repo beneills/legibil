@@ -5,8 +5,9 @@ require 'socket'
 require 'tempfile'
 require 'timeout'
 
-GrabPageError        = Class.new(Selenium::WebDriver::Error::WebDriverError)
-RenderFocusAreaError = Class.new(StandardError)
+GrabPageError            = Class.new(Selenium::WebDriver::Error::WebDriverError)
+RenderFocusAreaError     = Class.new(StandardError)
+RenderColourPaletteError = Class.new(StandardError)
 
 class RefreshEndpointWorker
   include Sidekiq::Worker
@@ -36,13 +37,20 @@ class RefreshEndpointWorker
       endpoint.save!
     end
 
-    # render focus area and attach to endpoin                                                       t
+    # render focus area and attach to endpoint
     save_focus_area(endpoint, screenshot)
+
+    # render colour palette and attach to endpoint
+    save_colour_palette(endpoint, screenshot)
+
   rescue GrabPageError => e
     logger.info "error while grabbing screenshot: #{e.message}"
     fail endpoint
   rescue RenderFocusAreaError => e
     logger.info "error while rendering focus area: #{e.message}"
+    fail endpoint
+  rescue RenderColourPaletteError => e
+    logger.info "error while rendering colour palette: #{e.message}"
     fail endpoint
   else
     # update refresh time
@@ -282,5 +290,27 @@ class RefreshEndpointWorker
     cleanup background
     cleanup centre
     cleanup focus_area
+  end
+
+  # Colour View: palette rendering
+  #
+  # 1) Take the page screenshot
+  # 2) TODO Actually analyze colours
+  # 3) TODO generate palette image
+  def save_colour_palette(endpoint, screenshot)
+    # TODO does this successfully update?
+    colour_view = endpoint.colour_view || endpoint.build_colour_view
+
+    # delete current palette
+    colour_view.palette.destroy
+
+    File.open("public/palette.png") do |f|
+      colour_view.palette = f
+      colour_view.save!
+    end
+  rescue MiniMagick::Error, MiniMagick::Invalid => e
+    raise RenderColourPaletteError, e.message
+  ensure
+    # clean up stuff
   end
 end
