@@ -1,5 +1,0 @@
-screen -t rails   1 rails server
-screen -t redis   2 redis-server
-screen -t sidekiq 3 bundle exec sidekiq
-
-select rails

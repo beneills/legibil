@@ -87,5 +87,9 @@ group :development do
 
   # Deploy secrets.yml residing outside git
   gem 'capistrano-secrets-yml'
+
+  # Procfile-based development environment
+  gem 'foreman'
+  gem 'subcontractor'
 end
 

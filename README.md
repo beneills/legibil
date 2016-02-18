@@ -22,8 +22,10 @@ __A web app for automated UX testing.__
 
 ## Development ##
 
-Run `bin/development-environment` from the root legibil directory to launch a development environment.
-
+   git clone https://github.com/beneills/legibil.git
+   cd legibil
+   bundle install
+   foreman start # start development environment
 
 ## Views ##
 
