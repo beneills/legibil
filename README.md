@@ -22,10 +22,12 @@ __A web app for automated UX testing.__
 
 ## Development ##
 
-   git clone https://github.com/beneills/legibil.git
-   cd legibil
-   bundle install
-   foreman start # start development environment
+```bash
+ git clone https://github.com/beneills/legibil.git
+ cd legibil
+ bundle install
+ foreman start # launch development environment
+```
 
 ## Views ##
 
