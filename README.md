@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/beneills/legibil.svg?branch=master)](https://travis-ci.org/beneills/legibil)
+[![Build Status](https://travis-ci.org/beneills/legibil.svg?branch=sprint-2)](https://travis-ci.org/beneills/legibil)
 [![Code Climate](https://codeclimate.com/github/beneills/legibil/badges/gpa.svg)](https://codeclimate.com/github/beneills/legibil)
 [![Coverage Status](https://coveralls.io/repos/github/beneills/legibil/badge.svg?branch=master)](https://coveralls.io/github/beneills/legibil?branch=master)
 [![Dependency Status](https://gemnasium.com/beneills/legibil.svg)](https://gemnasium.com/beneills/legibil)
